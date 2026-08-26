@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HAPPY MINDAY 2026</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
@@ -54,8 +54,8 @@
       letter-spacing: 1px;
     }
 
-    /* 主編輯區塊容器 */
-    #mainView {
+    /* 視圖切換容器 */
+    .view-panel {
       width: 100%;
       max-width: 360px;
       display: flex;
@@ -342,19 +342,76 @@
       font-weight: bold;
     }
 
+    /* 下載圖片預覽頁面 View */
+    #downloadView {
+      display: none;
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .dl-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2ed573;
+      margin-bottom: 6px;
+    }
+
+    .dl-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 15px;
+    }
+
+    .result-img-container {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .result-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .btn-next-qr {
+      background: #ff4757;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 10px rgba(255,71,87,0.3);
+    }
+
+    .btn-back-editor {
+      background: #eee;
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
     /* 全螢幕 QR 跳轉頁面 View */
     #qrView {
       display: none;
-      width: 100%;
-      max-width: 360px;
-      flex-direction: column;
-      align-items: center;
       text-align: center;
       background: #fff;
       padding: 30px 20px;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-top: 10px;
     }
 
     .qr-page-title {
@@ -412,7 +469,7 @@
   <input type="file" id="fileInput" class="file-input" accept="image/*">
 
   <!-- 1. 主要編輯頁面 -->
-  <div id="mainView">
+  <div id="mainView" class="view-panel">
     <!-- 九宮格畫布 -->
     <div class="grid-container" id="grid">
       <div class="grid-item"></div>
@@ -473,8 +530,19 @@
     </div>
   </div>
 
-  <!-- 2. 全螢幕隨機 QR Code 感謝頁面 -->
-  <div id="qrView">
+  <!-- 2. 下載預覽頁面 -->
+  <div id="downloadView" class="view-panel">
+    <div class="dl-title" id="t-dl-title">🎉 拼貼已完成！</div>
+    <div class="dl-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
+    <div class="result-img-container">
+      <img id="resultImage" src="" alt="生成的拼貼圖">
+    </div>
+    <button class="btn-next-qr" onclick="switchToQrPage()" id="t-btn-next-qr">查看獨家驚喜 QR Code 👉</button>
+    <button class="btn-back-editor" onclick="switchToMain()" id="t-btn-back-editor">← 返回繼續編輯</button>
+  </div>
+
+  <!-- 3. 全螢幕隨機 QR Code 感謝頁面 -->
+  <div id="qrView" class="view-panel">
     <div class="qr-page-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
     <div class="qr-page-desc" id="t-qr-desc">感謝參與 HAPPY MINDAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
     <img src="" id="randomQrImg" class="qr-page-img" alt="隨機 QR Code">
@@ -500,10 +568,13 @@
         btnDownload: "下載圖片",
         btnShareX: "發送到 X",
         authorLabel: "製作者：",
+        dlTitle: "🎉 拼貼已完成！",
+        dlDesc: "請【長按下方圖片】選擇「儲存影像」存至手機相簿：",
+        btnNextQr: "查看獨家驚喜 QR Code 👉",
+        btnBackEditor: "← 返回繼續編輯",
         qrTitle: "🎁 獲得獨家驚喜 QR Code！",
         qrDesc: "感謝參與 HAPPY MINDAY 2026！<br>掃描下方 QR Code 獲取專屬內容：",
-        qrBack: "返回製作頁面",
-        alertShareX: "已為您開啟 X 發文頁面！\n（若圖片尚未下載，請先點擊下載圖片再上傳至 X）"
+        qrBack: "返回製作頁面"
       },
       ja: {
         stickerTitle: "ステッカーをタップして追加（ダブルタップで回転/拡大、右クリックで削除）：",
@@ -514,10 +585,13 @@
         btnDownload: "画像を保存",
         btnShareX: "X に投稿",
         authorLabel: "Created by ",
+        dlTitle: "🎉 コラージュが完成しました！",
+        dlDesc: "【画像を長押し】して「写真に保存」を選択してください：",
+        btnNextQr: "サプライズ QR コードを見る 👉",
+        btnBackEditor: "← 編集に戻る",
         qrTitle: "🎁 特別なサプライズ QR コード！",
         qrDesc: "HAPPY MINDAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
-        qrBack: "作成画面に戻る",
-        alertShareX: "Xの投稿画面を開きました！\n（画像がまだ保存されていない場合は、ダウンロードしてから添付してください）"
+        qrBack: "作成画面に戻る"
       },
       ko: {
         stickerTitle: "스티커를 클릭하여 추가（더블 클릭: 회전/확대, 우클릭: 삭제）:",
@@ -528,10 +602,13 @@
         btnDownload: "이미지 다운로드",
         btnShareX: "X에 공유하기",
         authorLabel: "제작자: ",
+        dlTitle: "🎉 콜라주 완성!",
+        dlDesc: "아래 이미지를 【길게 누른 후】 「사진에 저장」을 선택하세요:",
+        btnNextQr: "서프라이즈 QR 코드 확인하기 👉",
+        btnBackEditor: "← 계속 편집하기",
         qrTitle: "🎁 서프라이즈 QR 코드 획득!",
         qrDesc: "HAPPY MINDAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
-        qrBack: "만들기 페이지로 돌아가기",
-        alertShareX: "X 게시 화면으로 이동합니다!\n(이미지가 저장되지 않았다면 먼저 다운로드 후 첨부해 주세요)"
+        qrBack: "만들기 페이지로 돌아가기"
       },
       en: {
         stickerTitle: "Click stickers to add (Double click: rotate/zoom, right click: delete):",
@@ -542,10 +619,13 @@
         btnDownload: "Download Image",
         btnShareX: "Share to X",
         authorLabel: "Created by ",
+        dlTitle: "🎉 Collage Complete!",
+        dlDesc: "【Long press the image below】 and select 'Save Image':",
+        btnNextQr: "Get Surprise QR Code 👉",
+        btnBackEditor: "← Back to Edit",
         qrTitle: "🎁 Surprise QR Code Unlocked!",
         qrDesc: "Thank you for joining HAPPY MINDAY 2026!<br>Scan the QR Code below to check out special content:",
-        qrBack: "Back to Editor",
-        alertShareX: "X post page opened!\n(If image isn't saved yet, please download it first and attach to post)"
+        qrBack: "Back to Editor"
       }
     };
 
@@ -569,25 +649,43 @@
       document.getElementById('shareXBtn').innerText = data.btnShareX;
       document.getElementById('t-author-label').innerText = data.authorLabel;
 
+      document.getElementById('t-dl-title').innerText = data.dlTitle;
+      document.getElementById('t-dl-desc').innerText = data.dlDesc;
+      document.getElementById('t-btn-next-qr').innerText = data.btnNextQr;
+      document.getElementById('t-btn-back-editor').innerText = data.btnBackEditor;
+
       document.getElementById('t-qr-title').innerText = data.qrTitle;
       document.getElementById('t-qr-desc').innerHTML = data.qrDesc;
       document.getElementById('t-qr-back').innerText = data.qrBack;
     }
 
-    // --- 頁面跳轉邏輯 ---
+    // --- 頁面切換邏輯 ---
+    function hideAllViews() {
+      document.getElementById('mainView').style.display = 'none';
+      document.getElementById('downloadView').style.display = 'none';
+      document.getElementById('qrView').style.display = 'none';
+    }
+
+    function switchToMain() {
+      hideAllViews();
+      document.getElementById('mainView').style.display = 'flex';
+      window.scrollTo(0, 0);
+    }
+
+    function switchToDownload(imgBase64) {
+      hideAllViews();
+      document.getElementById('resultImage').src = imgBase64;
+      document.getElementById('downloadView').style.display = 'flex';
+      window.scrollTo(0, 0);
+    }
+
     function switchToQrPage() {
+      hideAllViews();
       if (qrCodeList.length > 0) {
         const randomIndex = Math.floor(Math.random() * qrCodeList.length);
         document.getElementById('randomQrImg').src = qrCodeList[randomIndex];
       }
-      document.getElementById('mainView').style.display = 'none';
       document.getElementById('qrView').style.display = 'flex';
-      window.scrollTo(0, 0);
-    }
-
-    function switchToMain() {
-      document.getElementById('qrView').style.display = 'none';
-      document.getElementById('mainView').style.display = 'flex';
       window.scrollTo(0, 0);
     }
 
@@ -796,42 +894,30 @@
       });
     }
 
-    // 1. 下載圖片：自動觸發下載/儲存，並切換至 QR 頁面
+    // 1. 下載圖片：切換至專屬下載預覽頁，讓手機長按儲存
     downloadBtn.addEventListener('click', () => {
       renderGridCanvas().then(canvas => {
         const imageBase64 = canvas.toDataURL('image/png');
-        
-        // 嘗試下載檔案
-        const link = document.createElement('a');
-        link.download = 'HAPPY_MINDAY_2026.png';
-        link.href = imageBase64;
-        link.click();
-
-        // 完成後切換到整頁 QR 碼頁面
-        setTimeout(switchToQrPage, 500);
+        switchToDownload(imageBase64);
       });
     });
 
-    // 2. 發送到 X：觸發下載並開啟 X，最後切換至 QR 頁面
+    // 2. 發送到 X：點擊後立即在新分頁開啟 X，順暢不被手機安全機制攔截
     shareXBtn.addEventListener('click', () => {
       const userText = document.getElementById('tweetText').value;
       const userHashtags = document.getElementById('tweetHashtags').value;
 
+      const tweetText = encodeURIComponent(userText);
+      const hashtags = encodeURIComponent(userHashtags);
+      const xUrl = `https://x.com/intent/tweet?text=${tweetText}&hashtags=${hashtags}`;
+
+      // 在使用者主動點擊的當下開頁面，防止阻擋
+      window.open(xUrl, '_blank');
+
+      // 同步生成下載頁面，方便使用者返回時儲存
       renderGridCanvas().then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'HAPPY_MINDAY_2026.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-
-        const tweetText = encodeURIComponent(userText);
-        const hashtags = encodeURIComponent(userHashtags);
-        const xUrl = `https://x.com/intent/tweet?text=${tweetText}&hashtags=${hashtags}`;
-
-        window.open(xUrl, '_blank');
-        alert(i18n[currentLang].alertShareX);
-
-        // 切換到整頁 QR 碼頁面
-        setTimeout(switchToQrPage, 500);
+        const imageBase64 = canvas.toDataURL('image/png');
+        switchToDownload(imageBase64);
       });
     });
   </script>
