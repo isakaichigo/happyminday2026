@@ -97,20 +97,18 @@
     .grid-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr); 
-      grid-template-rows: repeat(3, 1fr); 
       gap: 3px;
       width: 100%;
-      aspect-ratio: 1 / 1;
       background-color: #ffffff;
-      overflow: visible;
+      overflow: hidden;
       position: relative;
       margin-bottom: 12px;
     }
 
-    /* 格子基本樣式 */
+    /* 格子基本樣式：強制正方形不變形 */
     .grid-item {
       width: 100%;
-      height: 100%;
+      aspect-ratio: 1 / 1;
       background-color: #f2f2f2;
       position: relative;
       cursor: pointer;
@@ -136,7 +134,7 @@
     .grid-item.center-block img {
       width: 100%;
       height: 100%;
-      object-fit: contain; /* 改為 cover 可改為強制的裁切填滿 */
+      object-fit: contain; /* 改為 contain 完整顯示 LOGO 不裁剪；若要硬填滿可改成 cover */
       pointer-events: none;
     }
 
@@ -433,7 +431,7 @@
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         
-        <!-- 中央第 5 格：寫死 LOGO 圖片且鎖定禁止前台點擊修改 -->
+        <!-- 中央第 5 格：寫死 LOGO 圖片且鎖定 -->
         <div class="grid-item center-block locked-block">
           <img src="LOGO.jpg" alt="LOGO">
         </div>
@@ -493,8 +491,8 @@
   </div>
 
   <script>
-    let currentTweetText = "在 Live 現場找到 MIN 的代表色了！祝 MIN 2005.09.08 生日快樂🎂❤️";
-    let currentHashtags = "HAPPY_MINDAY_2026,MIN";
+    let currentTweetText = "";
+    let currentHashtags = "";
 
     const qrCodeList = [
       'qr1.png',
@@ -502,12 +500,15 @@
       'qr3.png'
     ];
 
+    /* ========================================================
+       可在下面的 i18n 設定檔中，修改預設內文 (defaultText) 與 Hashtags (defaultHashtags)
+       ======================================================== */
     const i18n = {
       zh: {
         captchaSub: "select all images with MIN's color",
         captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "在 Live 現場找到 MIN 的代表色了！祝 MIN 2005.09.08 生日快樂🎂❤️",
-        defaultHashtags: "HAPPY_MINDAY_2026,MIN",
+        defaultText: "在這裡貼上你希望顯示的中文內文！", // 👈 設定發到 X 的中文內文
+        defaultHashtags: "HAPPY_MINDAY_2026,MIN",          // 👈 設定 Hashtags (用逗號隔開)
         btnDownload: "下載圖片",
         btnShareX: "發送到 X",
         authorLabel: "製作者：",
@@ -522,7 +523,7 @@
       ja: {
         captchaSub: "select all images with MIN's color",
         captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "Live会場でMINのメンバーカラーを見つけました！MINちゃん2005.09.08お誕生日おめでとう🎂❤️",
+        defaultText: "ここにXへ投稿する日文の文章を入力してください！", // 👈 日文內文
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "画像を保存",
         btnShareX: "X に投稿",
@@ -538,7 +539,7 @@
       ko: {
         captchaSub: "select all images with MIN's color",
         captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "라이브 현장에서 MIN의 상징색을 찾았습니다! MIN의 2005.09.08 생일을 축하합니다🎂❤️",
+        defaultText: "여기에 X에 공유할 한국어 문구를 입력하세요!", // 👈 韓文內文
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "이미지 다운로드",
         btnShareX: "X에 공유하기",
@@ -554,7 +555,7 @@
       en: {
         captchaSub: "select all images with MIN's color",
         captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "Found MIN's color at the Live show! Happy Birthday MIN 2005.09.08 🎂❤️",
+        defaultText: "Enter your default English text for X here!", // 👈 英文內文
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "Download Image",
         btnShareX: "Share to X",
@@ -595,6 +596,9 @@
       document.getElementById('t-qr-desc').innerHTML = data.qrDesc;
       document.getElementById('t-qr-back').innerText = data.qrBack;
     }
+
+    // 初始化語言 (預設中文)
+    setLanguage('zh');
 
     function hideAllViews() {
       document.getElementById('mainView').style.display = 'none';
