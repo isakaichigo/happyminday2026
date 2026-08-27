@@ -106,19 +106,19 @@
       margin-bottom: 12px;
     }
 
-    /* 格子基本樣式：固定 100px 正方形 */
-    .grid-item {
-      width: 100px;
-      height: 100px;
-      background-color: #f2f2f2;
-      position: relative;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
+ /* 格子基本樣式：固定 100px 正方形 */
+.grid-item {
+  width: 100px;
+  height: 100px;
+  background-color: #f2f2f2;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* 確保超出格子的部分被裁切 */
+  flex-shrink: 0;
+}
 
     .grid-item:not(.has-image):not(.locked-block)::before {
       content: "+";
@@ -140,27 +140,24 @@
       pointer-events: none;
     }
 
-    /* 上傳照片容器 */
-    .img-wrapper {
-      width: 100px;
-      height: 100px;
-      position: absolute;
-      top: 0;
-      left: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform-origin: center center;
-      touch-action: none;
-    }
-
-    /* 上傳照片自動裁切填滿不變形 */
-    .img-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      pointer-events: none;
-    }
+    /* 上傳照片容器：必須固定尺寸與 transform 基準點 */
+.img-wrapper {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: center center;
+  touch-action: none;
+  pointer-events: none; /* 避免干擾拖曳 */
+}
+ /* 上傳照片：嚴格維持 1:1 滿格且自動等比例裁切，絕不拉伸 */
+.img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover !important; /* 強制等比例填滿，不變形 */
+  display: block;
+}
 
     /* 格子刪除按鈕 */
     .delete-btn {
