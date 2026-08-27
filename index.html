@@ -740,21 +740,22 @@
       }
     });
 
-    /* 截圖下載邏輯 */
-    async function renderGridCanvas() {
-      items.forEach(i => i.classList.remove('selected'));
-      
-      const canvas = await html2canvas(gridCard, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        width: 336,
-        ignoreElements: (element) => {
-          return element.classList.contains('delete-btn') || element.classList.contains('zoom-control');
-        }
-      });
-      return canvas;
+    /* 截圖下載邏輯：高清化修復 */
+async function renderGridCanvas() {
+  items.forEach(i => i.classList.remove('selected'));
+  
+  const canvas = await html2canvas(gridCard, {
+    scale: 4, // 放大 4 倍渲染，畫面會超級銳利清晰！
+    dpi: 300, // 高解析度印刷級設定
+    useCORS: true,
+    logging: false,
+    width: 336,
+    ignoreElements: (element) => {
+      return element.classList.contains('delete-btn') || element.classList.contains('zoom-control');
     }
+  });
+  return canvas;
+}
 
     downloadBtn.addEventListener('click', () => {
       renderGridCanvas().then(canvas => {
