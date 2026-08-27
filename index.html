@@ -58,7 +58,7 @@
 
     /* === CAPTCHA 風格主外框卡片 === */
     .captcha-card {
-      width: 336px; /* 固定的精準卡片寬度 */
+      width: 336px;
       background: #ffffff;
       border: 2px solid #e0e0e0;
       border-radius: 8px;
@@ -106,19 +106,19 @@
       margin-bottom: 12px;
     }
 
- /* 格子基本樣式：固定 100px 正方形 */
-.grid-item {
-  width: 100px;
-  height: 100px;
-  background-color: #f2f2f2;
-  position: relative;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden; /* 確保超出格子的部分被裁切 */
-  flex-shrink: 0;
-}
+    /* 格子基本樣式：固定 100px 正方形 */
+    .grid-item {
+      width: 100px;
+      height: 100px;
+      background-color: #f2f2f2;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
 
     .grid-item:not(.has-image):not(.locked-block)::before {
       content: "+";
@@ -140,24 +140,20 @@
       pointer-events: none;
     }
 
-    /* 上傳照片容器：必須固定尺寸與 transform 基準點 */
-.img-wrapper {
-  width: 100px;
-  height: 100px;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-origin: center center;
-  touch-action: none;
-  pointer-events: none; /* 避免干擾拖曳 */
-}
- /* 上傳照片：嚴格維持 1:1 滿格且自動等比例裁切，絕不拉伸 */
-.img-wrapper img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover !important; /* 強制等比例填滿，不變形 */
-  display: block;
-}
+    /* 上傳照片容器：改用背景圖，完美支援 html2canvas 防壓扁 */
+    .img-wrapper {
+      width: 100px;
+      height: 100px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: center center;
+      touch-action: none;
+      pointer-events: none;
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+    }
 
     /* 格子刪除按鈕 */
     .delete-btn {
@@ -718,6 +714,7 @@
       document.addEventListener('touchend', onEnd);
     });
 
+    /* 重設圖片載入邏輯：改為 background-image 避免 html2canvas 變形 */
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file && activeItem) {
@@ -726,11 +723,9 @@
         if (!wrapper) {
           wrapper = document.createElement('div');
           wrapper.className = 'img-wrapper';
-          const img = document.createElement('img');
-          wrapper.appendChild(img);
           activeItem.appendChild(wrapper);
         }
-        wrapper.querySelector('img').src = imgUrl;
+        wrapper.style.backgroundImage = `url('${imgUrl}')`;
         activeItem.classList.add('has-image', 'selected');
         activeItem.state = { scale: 1, x: 0, y: 0 };
         activeItem.querySelector('.zoom-control input').value = 1;
@@ -745,7 +740,7 @@
       }
     });
 
-    // 截圖下載邏輯
+    /* 截圖下載邏輯 */
     async function renderGridCanvas() {
       items.forEach(i => i.classList.remove('selected'));
       
@@ -753,7 +748,7 @@
         scale: 2,
         useCORS: true,
         logging: false,
-        width: 336, // 寫死輸出畫布尺寸，保證不壓縮變形
+        width: 336,
         ignoreElements: (element) => {
           return element.classList.contains('delete-btn') || element.classList.contains('zoom-control');
         }
