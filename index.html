@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>HAPPY MINDAY 2026</title>
+  <title>HAPPY MIN DAY 2026 - Color Hunting</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
@@ -41,17 +41,10 @@
       transition: all 0.2s;
     }
     .lang-btn.active {
-      background: #ff4757;
-      color: #fff;
-      border-color: #ff4757;
+      background: #fed32c;
+      color: #000;
+      border-color: #fed32c;
       font-weight: bold;
-    }
-
-    h1 {
-      margin-bottom: 12px;
-      font-size: 22px;
-      color: #333;
-      letter-spacing: 1px;
     }
 
     /* 視圖切換容器 */
@@ -63,27 +56,61 @@
       align-items: center;
     }
 
-    /* 3:4 直式畫布 */
+    /* === CAPTCHA 風格主外框卡片 === */
+    .captcha-card {
+      width: 100%;
+      background: #ffffff;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    /* 頂部黃色標題區 */
+    .captcha-header {
+      background-color: #fed32c;
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      color: #000000;
+      font-family: "Courier New", Courier, monospace, sans-serif;
+    }
+    .captcha-header .sub-title {
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .captcha-header .main-title {
+      font-size: 22px;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1.1;
+      letter-spacing: 0.5px;
+    }
+
+    /* 中間 3x3 九宮格 */
     .grid-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr); 
-      grid-template-rows: 1fr 33.333% 1fr; 
-      gap: 0;
+      grid-template-rows: repeat(3, 1fr); 
+      gap: 3px;
       width: 100%;
-      aspect-ratio: 3 / 4;
-      background-color: #fff;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      margin-bottom: 15px;
+      aspect-ratio: 1 / 1;
+      background-color: #ffffff;
+      overflow: visible;
       position: relative;
+      margin-bottom: 12px;
     }
 
     /* 格子基本樣式 */
     .grid-item {
       width: 100%;
       height: 100%;
-      border: none;
-      background-color: #eaeaea;
+      background-color: #f2f2f2;
       position: relative;
       cursor: pointer;
       display: flex;
@@ -95,7 +122,7 @@
     .grid-item::before {
       content: "+";
       font-size: 32px;
-      color: #aaa;
+      color: #bbb;
       font-weight: 300;
     }
 
@@ -156,7 +183,7 @@
       transform: translateX(-50%);
       width: 80%;
       z-index: 10;
-      background: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.9);
       padding: 2px 6px;
       border-radius: 10px;
     }
@@ -171,13 +198,88 @@
       cursor: pointer;
     }
 
-    /* 中間固定正方形格 */
+    /* 中間固定格 (第5格) - 凸起效果 */
     .grid-item.center-item {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1.28);
+      z-index: 15;
+      border: 4px solid #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
       background-color: #ff4757;
       cursor: default;
+      overflow: hidden;
+      width: 32%;
+      aspect-ratio: 1 / 1;
     }
     .grid-item.center-item::before {
       display: none;
+    }
+    .grid-item.center-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* 底部社群互動欄 */
+    .captcha-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 2px 0 2px;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .social-icons svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: #222;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tag-btn {
+      background-color: #fed32c;
+      color: #000;
+      font-weight: 900;
+      font-style: italic;
+      font-family: "Courier New", Courier, monospace, sans-serif;
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    /* 可拖曳貼紙 */
+    .placed-sticker {
+      position: absolute;
+      cursor: move;
+      z-index: 20;
+      transform-origin: center center;
+      touch-action: none;
+      display: inline-block;
+    }
+
+    .placed-sticker img {
+      width: 55px;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    .placed-sticker.selected {
+      outline: 1.5px dashed #000;
+      border-radius: 4px;
     }
 
     /* 貼紙選擇區 */
@@ -217,11 +319,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 0.1s, border-color 0.2s;
-    }
-
-    .sticker-option:hover {
-      border-color: #ff4757;
+      transition: transform 0.1s;
     }
 
     .sticker-option:active {
@@ -232,28 +330,6 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-    }
-
-    /* 可拖曳貼紙 */
-    .placed-sticker {
-      position: absolute;
-      cursor: move;
-      z-index: 20;
-      transform-origin: center center;
-      touch-action: none;
-      display: inline-block;
-    }
-
-    .placed-sticker img {
-      width: 60px;
-      height: auto;
-      display: block;
-      pointer-events: none;
-    }
-
-    .placed-sticker.selected {
-      outline: 1.5px dashed #ff4757;
-      border-radius: 4px;
     }
 
     /* 輸入區塊 */
@@ -293,7 +369,7 @@
 
     .form-group textarea {
       resize: vertical;
-      height: 60px;
+      height: 55px;
     }
 
     /* 按鈕區 */
@@ -301,7 +377,7 @@
       display: flex;
       gap: 10px;
       width: 100%;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .action-btn {
@@ -330,14 +406,14 @@
 
     /* 頁尾帳號標示區 */
     .footer-author {
-      font-size: 13px;
+      font-size: 12px;
       color: #777;
       text-align: center;
-      margin-top: 5px;
+      margin-bottom: 10px;
     }
 
     .footer-author a {
-      color: #ff4757;
+      color: #333;
       text-decoration: none;
       font-weight: bold;
     }
@@ -367,7 +443,6 @@
 
     .result-img-container {
       width: 100%;
-      aspect-ratio: 3 / 4;
       margin-bottom: 20px;
       border-radius: 8px;
       overflow: hidden;
@@ -376,13 +451,14 @@
 
     .result-img-container img {
       width: 100%;
-      height: 100%;
+      height: auto;
+      display: block;
       object-fit: contain;
     }
 
     .btn-next-qr {
-      background: #ff4757;
-      color: #fff;
+      background: #fed32c;
+      color: #000;
       border: none;
       padding: 12px 20px;
       border-radius: 20px;
@@ -391,7 +467,7 @@
       cursor: pointer;
       width: 100%;
       margin-bottom: 10px;
-      box-shadow: 0 4px 10px rgba(255,71,87,0.3);
+      box-shadow: 0 4px 10px rgba(254,211,44,0.4);
     }
 
     .btn-back-editor {
@@ -464,28 +540,54 @@
     <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
   </div>
 
-  <h1>HAPPY MINDAY 2026</h1>
-
   <input type="file" id="fileInput" class="file-input" accept="image/*">
 
   <!-- 1. 主要編輯頁面 -->
   <div id="mainView" class="view-panel">
-    <!-- 九宮格畫布 -->
-    <div class="grid-container" id="grid">
-      <div class="grid-item"></div>
-      <div class="grid-item"></div>
-      <div class="grid-item"></div>
-      <div class="grid-item"></div>
-      
-      <!-- 中間正方形格 -->
-      <div class="grid-item center-item">
-        <img src="center.png" alt="中間固定圖" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\'100%\' height=\'100%\' viewBox=\'0 0 100 100\' style=\'background:#ff4757;\'><text x=\'50%\' y=\'52%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#ffffff\' font-size=\'12\' font-weight=\'bold\'>HAPPY MINDAY</text></svg>'">
+    
+    <!-- CAPTCHA 風格畫布卡片 -->
+    <div class="captcha-card" id="gridCard">
+      <!-- 頂部標題區 -->
+      <div class="captcha-header">
+        <span class="sub-title" id="t-captcha-sub">select all images with MIN's color</span>
+        <span class="main-title" id="t-captcha-main">HAPPY MIN DAY 2026</span>
       </div>
-      
-      <div class="grid-item"></div>
-      <div class="grid-item"></div>
-      <div class="grid-item"></div>
-      <div class="grid-item"></div>
+
+      <!-- 九宮格畫布 -->
+      <div class="grid-container" id="grid">
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        
+        <!-- 中間佔位（實際凸起圖會定位在此處中央） -->
+        <div></div> 
+        
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+
+        <!-- 凸起的中間固定格 -->
+        <div class="grid-item center-item">
+          <img src="center.png" alt="MIN 生日 Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\'100%\' height=\'100%\' viewBox=\'0 0 100 100\' style=\'background:#ff4757;\'><text x=\'50%\' y=\'45%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#ffffff\' font-size=\'11\' font-weight=\'bold\'>HAPPY MIN DAY</text><text x=\'50%\' y=\ me62%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#ffffff\' font-size=\'9\'>2005.09.08</text></svg>'">
+        </div>
+      </div>
+
+      <!-- 底部社群 Icon 區 -->
+      <div class="captcha-footer">
+        <div class="social-icons">
+          <!-- 愛心 -->
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+          <!-- 留言 -->
+          <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          <!-- 分享 -->
+          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <!-- 書籤 -->
+          <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+        </div>
+        <div class="tag-btn">DONE</div>
+      </div>
     </div>
 
     <!-- 貼紙選擇區 -->
@@ -495,10 +597,10 @@
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:sparkles.svg" alt="貼紙1"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:sparkling-heart.svg" alt="貼紙2"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:ribbon.svg" alt="貼紙3"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:balloon.svg" alt="貼紙4"></div>
+        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:birthday-cake.svg" alt="貼紙4"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:party-popper.svg" alt="貼紙5"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:four-leaf-clover.svg" alt="貼紙6"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:hot-beverage.svg" alt="貼紙7"></div>
+        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:guitar.svg" alt="貼紙6"></div>
+        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:notes.svg" alt="貼紙7"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:camera-with-flash.svg" alt="貼紙8"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:glowing-star.svg" alt="貼紙9"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:fire.svg" alt="貼紙10"></div>
@@ -509,11 +611,11 @@
     <div class="form-container">
       <div class="form-group">
         <label for="tweetText" id="t-label-text">發文內文：</label>
-        <textarea id="tweetText" placeholder="輸入你想說的話...">HAPPY MINDAY 2026！我的九宮格拼貼完成囉！</textarea>
+        <textarea id="tweetText" placeholder="輸入你想說的話...">在 Live 現場找到 MIN 的代表色了！祝 MIN 2005.09.08 生日快樂🎂❤️</textarea>
       </div>
       <div class="form-group">
         <label for="tweetHashtags" id="t-label-hash">Hashtag（用逗號分隔，免加 #）：</label>
-        <input type="text" id="tweetHashtags" value="HAPPYMINDAY2026,PhotoGrid">
+        <input type="text" id="tweetHashtags" value="HAPPY_MINDAY_2026,MIN">
       </div>
     </div>
 
@@ -544,26 +646,26 @@
   <!-- 3. 全螢幕隨機 QR Code 感謝頁面 -->
   <div id="qrView" class="view-panel">
     <div class="qr-page-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
-    <div class="qr-page-desc" id="t-qr-desc">感謝參與 HAPPY MINDAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
+    <div class="qr-page-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
     <img src="" id="randomQrImg" class="qr-page-img" alt="隨機 QR Code">
     <button class="back-btn" onclick="switchToMain()" id="t-qr-back">返回製作頁面</button>
   </div>
 
   <script>
-    // 💡【QR Code 圖片清單】（替換為你的檔名）
     const qrCodeList = [
       'qr1.png',
       'qr2.png',
       'qr3.png'
     ];
 
-    // --- 多語言字典 ---
     const i18n = {
       zh: {
+        captchaSub: "select all images with MIN's color",
+        captchaMain: "HAPPY MIN DAY 2026",
         stickerTitle: "點擊貼紙加入畫布（雙擊旋轉/縮放，右鍵刪除）：",
         labelText: "發文內文：",
         textPlaceholder: "輸入你想說的話...",
-        defaultText: "HAPPY MINDAY 2026！我的九宮格拼貼完成囉！",
+        defaultText: "在 Live 現場找到 MIN 的代表色了！祝 MIN 2005.09.08 生日快樂🎂❤️",
         labelHash: "Hashtag（用逗號分隔，免加 #）：",
         btnDownload: "下載圖片",
         btnShareX: "發送到 X",
@@ -573,14 +675,16 @@
         btnNextQr: "查看獨家驚喜 QR Code 👉",
         btnBackEditor: "← 返回繼續編輯",
         qrTitle: "🎁 獲得獨家驚喜 QR Code！",
-        qrDesc: "感謝參與 HAPPY MINDAY 2026！<br>掃描下方 QR Code 獲取專屬內容：",
+        qrDesc: "感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 獲取專屬內容：",
         qrBack: "返回製作頁面"
       },
       ja: {
+        captchaSub: "select all images with MIN's color",
+        captchaMain: "HAPPY MIN DAY 2026",
         stickerTitle: "ステッカーをタップして追加（ダブルタップで回転/拡大、右クリックで削除）：",
         labelText: "投稿本文：",
         textPlaceholder: "メッセージを入力...",
-        defaultText: "HAPPY MINDAY 2026！グリッドコラージュが完成しました！",
+        defaultText: "Live会場でMINのメンバーカラーを見つけました！MINちゃん2005.09.08お誕生日おめでとう🎂❤️",
         labelHash: "ハッシュタグ（カンマ区切り、#は不要）：",
         btnDownload: "画像を保存",
         btnShareX: "X に投稿",
@@ -590,14 +694,16 @@
         btnNextQr: "サプライズ QR コードを見る 👉",
         btnBackEditor: "← 編集に戻る",
         qrTitle: "🎁 特別なサプライズ QR コード！",
-        qrDesc: "HAPPY MINDAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
+        qrDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
         qrBack: "作成画面に戻る"
       },
       ko: {
+        captchaSub: "select all images with MIN's color",
+        captchaMain: "HAPPY MIN DAY 2026",
         stickerTitle: "스티커를 클릭하여 추가（더블 클릭: 회전/확대, 우클릭: 삭제）:",
         labelText: "게시글 내용:",
         textPlaceholder: "문구를 입력하세요...",
-        defaultText: "HAPPY MINDAY 2026! 나만의 그리드 콜라주 완성!",
+        defaultText: "라이브 현장에서 MIN의 상징색을 찾았습니다! MIN의 2005.09.08 생일을 축하합니다🎂❤️",
         labelHash: "해시태그 (쉼표로 구분, # 제외):",
         btnDownload: "이미지 다운로드",
         btnShareX: "X에 공유하기",
@@ -607,14 +713,16 @@
         btnNextQr: "서프라이즈 QR 코드 확인하기 👉",
         btnBackEditor: "← 계속 편집하기",
         qrTitle: "🎁 서프라이즈 QR 코드 획득!",
-        qrDesc: "HAPPY MINDAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
+        qrDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
         qrBack: "만들기 페이지로 돌아가기"
       },
       en: {
+        captchaSub: "select all images with MIN's color",
+        captchaMain: "HAPPY MIN DAY 2026",
         stickerTitle: "Click stickers to add (Double click: rotate/zoom, right click: delete):",
         labelText: "Post Text:",
         textPlaceholder: "Type your message...",
-        defaultText: "HAPPY MINDAY 2026! My photo grid collage is ready!",
+        defaultText: "Found MIN's color at the Live show! Happy Birthday MIN 2005.09.08 🎂❤️",
         labelHash: "Hashtags (Comma separated, no #):",
         btnDownload: "Download Image",
         btnShareX: "Share to X",
@@ -624,7 +732,7 @@
         btnNextQr: "Get Surprise QR Code 👉",
         btnBackEditor: "← Back to Edit",
         qrTitle: "🎁 Surprise QR Code Unlocked!",
-        qrDesc: "Thank you for joining HAPPY MINDAY 2026!<br>Scan the QR Code below to check out special content:",
+        qrDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Scan the QR Code below to check out special content:",
         qrBack: "Back to Editor"
       }
     };
@@ -640,6 +748,8 @@
       }
 
       const data = i18n[lang];
+      document.getElementById('t-captcha-sub').innerText = data.captchaSub;
+      document.getElementById('t-captcha-main').innerText = data.captchaMain;
       document.getElementById('t-sticker-title').innerText = data.stickerTitle;
       document.getElementById('t-label-text').innerText = data.labelText;
       document.getElementById('tweetText').placeholder = data.textPlaceholder;
@@ -659,7 +769,6 @@
       document.getElementById('t-qr-back').innerText = data.qrBack;
     }
 
-    // --- 頁面切換邏輯 ---
     function hideAllViews() {
       document.getElementById('mainView').style.display = 'none';
       document.getElementById('downloadView').style.display = 'none';
@@ -689,12 +798,11 @@
       window.scrollTo(0, 0);
     }
 
-    // --- 相片與貼紙控制 logic ---
     const fileInput = document.getElementById('fileInput');
     const items = document.querySelectorAll('.grid-item:not(.center-item)');
     const downloadBtn = document.getElementById('downloadBtn');
     const shareXBtn = document.getElementById('shareXBtn');
-    const grid = document.getElementById('grid');
+    const gridCard = document.getElementById('gridCard');
     let activeItem = null;
 
     items.forEach(item => {
@@ -871,7 +979,7 @@
       document.addEventListener('touchmove', onMove, { passive: false });
       document.addEventListener('touchend', onEnd);
 
-      grid.appendChild(sticker);
+      gridCard.appendChild(sticker);
     }
 
     document.addEventListener('click', (e) => {
@@ -883,18 +991,16 @@
       }
     });
 
-    // 渲染畫布
     function renderGridCanvas() {
       document.querySelectorAll('.delete-btn, .zoom-control').forEach(el => el.style.display = 'none');
       document.querySelectorAll('.placed-sticker').forEach(s => s.classList.remove('selected'));
 
-      return html2canvas(grid, { scale: 2, useCORS: true }).then(canvas => {
+      return html2canvas(gridCard, { scale: 2, useCORS: true }).then(canvas => {
         document.querySelectorAll('.delete-btn').forEach(el => el.style.display = '');
         return canvas;
       });
     }
 
-    // 1. 下載圖片：切換至專屬下載預覽頁，讓手機長按儲存
     downloadBtn.addEventListener('click', () => {
       renderGridCanvas().then(canvas => {
         const imageBase64 = canvas.toDataURL('image/png');
@@ -902,7 +1008,6 @@
       });
     });
 
-    // 2. 發送到 X：點擊後立即在新分頁開啟 X，順暢不被手機安全機制攔截
     shareXBtn.addEventListener('click', () => {
       const userText = document.getElementById('tweetText').value;
       const userHashtags = document.getElementById('tweetHashtags').value;
@@ -911,10 +1016,8 @@
       const hashtags = encodeURIComponent(userHashtags);
       const xUrl = `https://x.com/intent/tweet?text=${tweetText}&hashtags=${hashtags}`;
 
-      // 在使用者主動點擊的當下開頁面，防止阻擋
       window.open(xUrl, '_blank');
 
-      // 同步生成下載頁面，方便使用者返回時儲存
       renderGridCanvas().then(canvas => {
         const imageBase64 = canvas.toDataURL('image/png');
         switchToDownload(imageBase64);
