@@ -120,17 +120,24 @@
       overflow: hidden;
     }
 
-    .grid-item:not(.has-image)::before {
+    .grid-item:not(.has-image):not(.locked-block)::before {
       content: "+";
       font-size: 32px;
       color: #bbb;
       font-weight: 300;
     }
 
-    /* 中間白底 LOGO 格特化 */
+    /* 中間白底固定 LOGO 格樣式 */
     .grid-item.center-block {
       background-color: #ffffff;
-      border: 1px dashed #ddd;
+      cursor: default;
+    }
+
+    .grid-item.center-block img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* 改為 cover 可改為強制的裁切填滿 */
+      pointer-events: none;
     }
 
     /* 上傳照片容器 */
@@ -147,17 +154,12 @@
       touch-action: none;
     }
 
-    /* 關鍵修復：改為 cover，非正方形圖片上傳後自動裁切填滿，不變形 */
+    /* 非正方形圖片上傳後自動裁切填滿，不變形 */
     .img-wrapper img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       pointer-events: none;
-    }
-
-    /* 中間 LOGO 若要完整顯示可調整 object-fit */
-    .grid-item.center-block .img-wrapper img {
-      object-fit: contain;
     }
 
     /* 格子刪除按鈕 */
@@ -179,7 +181,7 @@
       z-index: 10;
     }
 
-    .grid-item.has-image .delete-btn {
+    .grid-item.has-image:not(.locked-block) .delete-btn {
       display: block;
     }
 
@@ -197,7 +199,7 @@
       border-radius: 10px;
     }
 
-    .grid-item.selected .zoom-control {
+    .grid-item.selected:not(.locked-block) .zoom-control {
       display: flex;
       align-items: center;
     }
@@ -431,10 +433,9 @@
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         
-        <!-- 中央白底 LOGO 格（點擊可更換自己的 LOGO.jpg） -->
-        <div class="grid-item center-block">
-          <!-- 提示：如果想預設直接顯示特定 LOGO，可在這裡替換圖片路徑 -->
-          <!-- <div class="img-wrapper"><img src="LOGO.jpg" alt="LOGO"></div> -->
+        <!-- 中央第 5 格：寫死 LOGO 圖片且鎖定禁止前台點擊修改 -->
+        <div class="grid-item center-block locked-block">
+          <img src="LOGO.jpg" alt="LOGO">
         </div>
 
         <div class="grid-item"></div>
@@ -625,7 +626,7 @@
     }
 
     const fileInput = document.getElementById('fileInput');
-    const items = document.querySelectorAll('.grid-item');
+    const items = document.querySelectorAll('.grid-item:not(.locked-block)');
     const downloadBtn = document.getElementById('downloadBtn');
     const shareXBtn = document.getElementById('shareXBtn');
     const gridCard = document.getElementById('gridCard');
@@ -745,9 +746,8 @@
       }
     });
 
-    // 截圖下載邏輯修正
+    // 截圖下載邏輯
     async function renderGridCanvas() {
-      // 移除選取與縮放控制外框
       items.forEach(i => i.classList.remove('selected'));
       
       const canvas = await html2canvas(gridCard, {
@@ -755,7 +755,6 @@
         useCORS: true,
         logging: false,
         ignoreElements: (element) => {
-          // 截圖時排除刪除鈕與縮放條
           return element.classList.contains('delete-btn') || element.classList.contains('zoom-control');
         }
       });
