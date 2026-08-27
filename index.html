@@ -118,7 +118,8 @@
       background-color: #e8e8e8;
     }
 
-    .grid-item::before {
+    /* 預設加號標誌（排除中間格） */
+    .grid-item:not(.locked-block)::before {
       content: '+';
       font-size: 36px;
       color: #bbb;
@@ -135,10 +136,21 @@
       z-index: 2;
     }
 
+    /* 中間固定區域修正 */
+    .grid-item.locked-block {
+      background-color: #ffffff;
+      cursor: default;
+      padding: 0;
+    }
+
     .grid-item.locked-block img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
     /* 圖片包裹與拉桿 */
@@ -337,7 +349,6 @@
 
   <div class="view-container">
 
-    <!-- 多語言切換器 -->
     <div class="lang-switch">
       <button class="lang-btn active" onclick="setLanguage('zh', event)">繁體中文</button>
       <button class="lang-btn" onclick="setLanguage('ja', event)">日本語</button>
@@ -345,7 +356,6 @@
       <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
     </div>
 
-    <!-- 1. 主編輯視圖 -->
     <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
       <div class="card-container" id="collageCard">
         <div class="captcha-header">
@@ -358,7 +368,6 @@
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           <div class="grid-item"></div>
-          <!-- 中間 LOGO 圖片（已設置跨域代理服務器） -->
           <div class="grid-item center-block locked-block">
             <img src="https://i.ibb.co/JjWSpqmY/minminmin-02.jpg" alt="LOGO" id="logoImgElement">
           </div>
@@ -387,7 +396,6 @@
       <div class="author-tag"><span id="t-author-label">製作者：</span>@isakaichigo</div>
     </div>
 
-    <!-- 2. 完成下載視圖 -->
     <div id="downloadView" class="result-view">
       <div class="result-card">
         <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
@@ -400,7 +408,6 @@
       </div>
     </div>
 
-    <!-- 3. QR Code 驚喜頁面視圖 -->
     <div id="qrView" class="result-view">
       <div class="result-card">
         <div class="result-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
