@@ -41,9 +41,9 @@
       transition: all 0.2s;
     }
     .lang-btn.active {
-      background: #fed32c;
-      color: #000;
-      border-color: #fed32c;
+      background: #F39800;
+      color: #fff;
+      border-color: #F39800;
       font-weight: bold;
     }
 
@@ -68,13 +68,13 @@
       position: relative;
     }
 
-    /* 頂部黃色標題區 */
+    /* 頂部主題色標題區 */
     .captcha-header {
-      background-color: #fed32c;
+      background-color: #F39800;
       padding: 14px 16px;
       border-radius: 4px;
       margin-bottom: 10px;
-      color: #000000;
+      color: #ffffff;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
     .captcha-header .sub-title {
@@ -120,7 +120,7 @@
       overflow: hidden;
     }
 
-    .grid-item::before {
+    .grid-item:not(.center-block)::before {
       content: "+";
       font-size: 32px;
       color: #bbb;
@@ -129,6 +129,28 @@
 
     .grid-item.has-image::before {
       display: none;
+    }
+
+    /* 正中央固定色塊格 */
+    .grid-item.center-block {
+      background-color: #F39800;
+      color: #ffffff;
+      cursor: default;
+      flex-direction: column;
+      padding: 8px;
+      text-align: center;
+    }
+    .center-block .c-date {
+      font-size: 11px;
+      font-weight: 500;
+      margin-bottom: 2px;
+      opacity: 0.9;
+    }
+    .center-block .c-title {
+      font-size: 13px;
+      font-weight: 900;
+      font-style: italic;
+      line-height: 1.2;
     }
 
     /* 上傳照片容器 */
@@ -224,8 +246,8 @@
     }
 
     .tag-btn {
-      background-color: #fed32c;
-      color: #000;
+      background-color: #F39800;
+      color: #fff;
       font-weight: 900;
       font-style: italic;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -246,14 +268,14 @@
     }
 
     .placed-sticker img {
-      width: 65px;
+      width: 80px;
       height: auto;
       display: block;
       pointer-events: none;
     }
 
     .placed-sticker.selected {
-      outline: 1.5px dashed #000;
+      outline: 1.5px dashed #F39800;
       border-radius: 4px;
     }
 
@@ -283,8 +305,8 @@
     }
 
     .sticker-option {
-      width: 44px;
-      height: 44px;
+      width: 48px;
+      height: 48px;
       background: #f9f9f9;
       border: 1px solid #eee;
       border-radius: 8px;
@@ -392,8 +414,8 @@
     }
 
     .btn-next-qr {
-      background: #fed32c;
-      color: #000;
+      background: #F39800;
+      color: #fff;
       border: none;
       padding: 12px 20px;
       border-radius: 20px;
@@ -402,7 +424,7 @@
       cursor: pointer;
       width: 100%;
       margin-bottom: 10px;
-      box-shadow: 0 4px 10px rgba(254,211,44,0.4);
+      box-shadow: 0 4px 10px rgba(243,152,0,0.3);
     }
 
     .btn-back-editor {
@@ -415,7 +437,7 @@
       cursor: pointer;
     }
 
-    /* 全螢幕 QR 跳轉頁面 View */
+    /* 全螢幕隨機 QR Code 頁面 View */
     #qrView {
       display: none;
       text-align: center;
@@ -428,7 +450,7 @@
     .qr-page-title {
       font-size: 18px;
       font-weight: bold;
-      color: #ff4757;
+      color: #F39800;
       margin-bottom: 10px;
     }
 
@@ -488,13 +510,19 @@
         <span class="main-title" id="t-captcha-main">HAPPY MIN DAY 2026</span>
       </div>
 
-      <!-- 完整 3x3 九宮格畫布 -->
+      <!-- 3x3 九宮格畫布 -->
       <div class="grid-container" id="grid">
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
-        <div class="grid-item"></div>
+        
+        <!-- 中央固定主題色塊 -->
+        <div class="grid-item center-block">
+          <span class="c-date">2005.09.08</span>
+          <span class="c-title">HAPPY MIN DAY</span>
+        </div>
+
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
@@ -521,16 +549,18 @@
     <div class="sticker-selector">
       <div class="sticker-title" id="t-sticker-title">點擊貼紙加入畫布（雙擊旋轉/縮放，右鍵刪除）：</div>
       <div class="sticker-list" id="stickerList">
+        
+        <!-- 【預留區】：替換 src 為你的圖床網址即可 -->
+        <div class="sticker-option"><img src="https://i.imgur.com/YOUR_IMAGE_1.png" alt="自訂LOGOPNG" id="custom-sticker-1"></div>
+        <div class="sticker-option"><img src="https://i.imgur.com/YOUR_IMAGE_2.png" alt="自訂貼紙PNG" id="custom-sticker-2"></div>
+        
+        <!-- 預設常用貼紙 -->
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:sparkles.svg" alt="貼紙1"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:sparkling-heart.svg" alt="貼紙2"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:ribbon.svg" alt="貼紙3"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:birthday-cake.svg" alt="貼紙4"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:party-popper.svg" alt="貼紙5"></div>
         <div class="sticker-option"><img src="https://api.iconify.design/twemoji:guitar.svg" alt="貼紙6"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:notes.svg" alt="貼紙7"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:camera-with-flash.svg" alt="貼紙8"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:glowing-star.svg" alt="貼紙9"></div>
-        <div class="sticker-option"><img src="https://api.iconify.design/twemoji:fire.svg" alt="貼紙10"></div>
       </div>
     </div>
 
@@ -709,7 +739,7 @@
     }
 
     const fileInput = document.getElementById('fileInput');
-    const items = document.querySelectorAll('.grid-item');
+    const items = document.querySelectorAll('.grid-item:not(.center-block)');
     const downloadBtn = document.getElementById('downloadBtn');
     const shareXBtn = document.getElementById('shareXBtn');
     const gridCard = document.getElementById('gridCard');
@@ -823,7 +853,7 @@
       fileInput.value = '';
     });
 
-    // 貼紙建立函式 (支援跨平台移動、旋轉與縮放)
+    // 貼紙建立函式
     function createSticker(srcUrl) {
       const sticker = document.createElement('div');
       sticker.className = 'placed-sticker';
@@ -831,8 +861,8 @@
       img.src = srcUrl;
       sticker.appendChild(img);
 
-      sticker.style.left = '40%';
-      sticker.style.top = '40%';
+      sticker.style.left = '35%';
+      sticker.style.top = '35%';
 
       let rotation = 0;
       let scale = 1;
@@ -885,7 +915,7 @@
       gridCard.appendChild(sticker);
     }
 
-    // 貼紙選擇區點擊事件
+    // 點擊貼紙區載入到畫布
     const stickerOptions = document.querySelectorAll('.sticker-option img');
     stickerOptions.forEach(imgEl => {
       imgEl.parentElement.addEventListener('click', () => {
