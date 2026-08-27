@@ -2,398 +2,429 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>HAPPY MIN DAY 2026 - Color Hunting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAPPY MIN DAY 2026 - Photo Collage</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       user-select: none;
+      -webkit-user-select: none;
     }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 10px;
-      background-color: #f5f5f5;
-    }
-
-    /* 多語言切換區 */
-    .lang-switch {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-      align-self: flex-end;
-      max-width: 360px;
-      width: 100%;
-      justify-content: flex-end;
-    }
-    .lang-btn {
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: #F39800;
-      color: #fff;
-      border-color: #F39800;
-      font-weight: bold;
-    }
-
-    /* 視圖切換容器 */
-    .view-panel {
-      width: 100%;
-      max-width: 360px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* === CAPTCHA 風格主外框卡片 === */
-    .captcha-card {
-      width: 336px;
-      background: #ffffff;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-      margin-bottom: 15px;
-      position: relative;
-    }
-
-    /* 頂部主題色標題區 */
-    .captcha-header {
-      background-color: #F39800;
-      padding: 14px 16px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      color: #ffffff;
-    }
-    .captcha-header .sub-title {
-      font-size: 12px;
-      font-weight: 500;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .captcha-header .main-title {
-      font-size: 22px;
-      font-weight: 900;
-      font-style: italic;
-      line-height: 1.1;
-    }
-
-    /* 九宮格 */
-    .grid-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      width: 308px;
-      height: 308px;
-      background-color: #ffffff;
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    .grid-item {
-      width: 100px;
-      height: 100px;
-      background-color: #f2f2f2;
-      position: relative;
-      cursor: pointer;
+      background-color: #f5f5f7;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
-      flex-shrink: 0;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
     }
 
-    .grid-item:not(.has-image):not(.locked-block)::before {
-      content: "+";
-      font-size: 32px;
+    .view-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 多語言切換按鈕 */
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .lang-btn {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn.active {
+      background-color: #F39800;
+      color: #ffffff;
+      border-color: #F39800;
+    }
+
+    /* 主卡片容器 */
+    .card-container {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border: 2px solid #e0e0e0;
+      width: 100%;
+    }
+
+    /* 頂部橘色區塊 */
+    .captcha-header {
+      background-color: #F39800;
+      border-radius: 8px;
+      padding: 16px 20px;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .captcha-sub {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .captcha-main {
+      font-size: 26px;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
+    /* 九宮格容器 */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background-color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .grid-item {
+      aspect-ratio: 1 / 1;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .grid-item:hover {
+      background-color: #e8e8e8;
+    }
+
+    .grid-item::before {
+      content: '+';
+      font-size: 36px;
       color: #bbb;
       font-weight: 300;
     }
 
-    .grid-item.center-block {
+    .grid-item.has-image::before {
+      display: none;
+    }
+
+    .grid-item.selected {
+      outline: 3px solid #F39800;
+      outline-offset: -3px;
+      z-index: 2;
+    }
+
+    /* 中間固定區塊 */
+    .grid-item.locked-block {
       background-color: #ffffff;
       cursor: default;
     }
 
-    .grid-item.center-block img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      pointer-events: none;
+    .grid-item.locked-block::before {
+      display: none;
     }
 
+    .grid-item.locked-block img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* 圖片包裹與拉桿 */
     .img-wrapper {
-      width: 100px;
-      height: 100px;
       position: absolute;
       top: 0;
       left: 0;
-      transform-origin: center center;
-      touch-action: none;
-      pointer-events: none;
+      width: 100%;
+      height: 100%;
       background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
+      background-position: center;
+      transform-origin: center center;
     }
 
     .delete-btn {
-      display: none;
       position: absolute;
       top: 4px;
       right: 4px;
       background: rgba(0, 0, 0, 0.6);
-      color: #fff;
+      color: white;
       border: none;
       border-radius: 50%;
       width: 22px;
       height: 22px;
-      font-size: 14px;
-      line-height: 22px;
-      text-align: center;
+      font-size: 12px;
+      display: none;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
       z-index: 10;
     }
 
-    .grid-item.has-image:not(.locked-block) .delete-btn {
-      display: block;
+    .grid-item.has-image:hover .delete-btn,
+    .grid-item.selected .delete-btn {
+      display: flex;
     }
 
     .zoom-control {
-      display: none;
       position: absolute;
       bottom: 4px;
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
-      z-index: 10;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       padding: 2px 6px;
       border-radius: 10px;
+      display: none;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    .grid-item.selected:not(.locked-block) .zoom-control {
+    .grid-item.selected .zoom-control {
       display: flex;
-      align-items: center;
     }
 
     .zoom-control input {
       width: 100%;
-      cursor: pointer;
+      accent-color: #F39800;
     }
 
-    .captcha-footer {
+    /* 底部社群列 */
+    .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 2px 0 2px;
+      padding: 4px 4px 0 4px;
     }
 
-    .social-icons {
+    .footer-icons {
       display: flex;
-      gap: 12px;
-      align-items: baseline; /* 改為 baseline 避免硬性拉伸 SVG */
+      gap: 14px;
+      align-items: center;
     }
 
-    /* 強制鎖定寬高與比例，防止愛心被壓扁 */
-    .social-icons svg {
-      width: 22px !important;
-      height: 22px !important;
-      flex-shrink: 0;
-      display: block;
+    .footer-icons svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #222;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .tag-btn {
+    .done-btn {
       background-color: #F39800;
-      color: #fff;
+      color: #ffffff;
       font-weight: 900;
       font-style: italic;
-      padding: 6px 16px;
-      border-radius: 4px;
-      font-size: 14px;
+      font-size: 18px;
+      padding: 8px 24px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
     }
 
-    .btn-group {
+    /* 操作按鈕區 */
+    .action-buttons {
       display: flex;
-      gap: 10px;
+      gap: 12px;
       width: 100%;
-      margin-bottom: 15px;
+      margin-top: 16px;
     }
 
-    .action-btn {
+    .btn {
       flex: 1;
-      padding: 12px 10px;
-      color: white;
+      padding: 14px;
       border: none;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      transition: transform 0.1s;
+      transition: transform 0.1s ease, opacity 0.2s ease;
       text-align: center;
     }
-    .action-btn:active { transform: scale(0.96); }
-    .btn-download { background-color: #2ed573; }
-    .btn-x { background-color: #000000; }
 
-    .footer-author {
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-download {
+      background-color: #F39800;
+      color: #ffffff;
+    }
+
+    .btn-share {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .author-tag {
+      margin-top: 12px;
       font-size: 12px;
-      color: #777;
+      color: #888;
       text-align: center;
-      margin-bottom: 10px;
-    }
-    .footer-author a {
-      color: #333;
-      text-decoration: none;
-      font-weight: bold;
     }
 
-    #downloadView {
+    /* 完成與 QR Code 頁面樣式 */
+    .result-view {
       display: none;
-      text-align: center;
-      background: #fff;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .result-card {
+      background: #ffffff;
+      border-radius: 16px;
       padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .dl-title { font-size: 18px; font-weight: bold; color: #2ed573; margin-bottom: 6px; }
-    .dl-desc { font-size: 13px; color: #666; margin-bottom: 15px; }
-
-    .result-img-container {
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
       width: 100%;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-    .result-img-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: contain;
-    }
-
-    .btn-next-qr {
-      background: #F39800;
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 10px;
-    }
-
-    .btn-back-editor {
-      background: #eee;
-      color: #333;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    #qrView {
-      display: none;
       text-align: center;
-      background: #fff;
-      padding: 30px 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .qr-page-title { font-size: 18px; font-weight: bold; color: #F39800; margin-bottom: 10px; }
-    .qr-page-desc { font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5; }
-    .qr-page-img { width: 220px; height: 220px; object-fit: contain; border: 1px solid #eee; border-radius: 12px; padding: 10px; margin-bottom: 25px; }
-    .back-btn { background: #333; color: #fff; border: none; padding: 10px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; cursor: pointer; }
 
-    .file-input { display: none; }
+    .result-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .result-desc {
+      font-size: 13.5px;
+      color: #666;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .result-img-preview {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .btn-secondary {
+      background-color: #f2f2f7;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    .qr-img {
+      width: 220px;
+      height: 220px;
+      margin: 10px auto 20px auto;
+      border-radius: 12px;
+      display: block;
+      border: 1px solid #eee;
+    }
+
+    #fileInput {
+      display: none;
+    }
   </style>
 </head>
 <body>
 
-  <div class="lang-switch">
-    <button class="lang-btn active" onclick="setLanguage('zh', event)">繁體中文</button>
-    <button class="lang-btn" onclick="setLanguage('ja', event)">日本語</button>
-    <button class="lang-btn" onclick="setLanguage('ko', event)">한국어</button>
-    <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
-  </div>
+  <div class="view-container">
 
-  <input type="file" id="fileInput" class="file-input" accept="image/*">
+    <!-- 多語言切換器 -->
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLanguage('zh', event)">繁體中文</button>
+      <button class="lang-btn" onclick="setLanguage('ja', event)">日本語</button>
+      <button class="lang-btn" onclick="setLanguage('ko', event)">한국어</button>
+      <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
+    </div>
 
-  <div id="mainView" class="view-panel">
-    <div class="captcha-card" id="gridCard">
-      <div class="captcha-header">
-        <span class="sub-title" id="t-captcha-sub">select all images with MIN's color</span>
-        <span class="main-title" id="t-captcha-main">HAPPY MIN DAY 2026</span>
-      </div>
-
-      <div class="grid-container" id="grid">
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item center-block locked-block">
-          <img src="https://i.urusai.cc/a3IKe.jpg" alt="LOGO" id="logoImgElement">
+    <!-- 1. 主編輯視圖 -->
+    <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+      <div class="card-container" id="collageCard">
+        <div class="captcha-header">
+          <div class="captcha-sub" id="t-captcha-sub">select all images with MIN's color</div>
+          <div class="captcha-main" id="t-captcha-main">HAPPY MIN DAY 2026</div>
         </div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-        <div class="grid-item"></div>
-      </div>
 
-      <div class="captcha-footer">
-        <div class="social-icons">
-          <!-- 嚴格繪製 24x24 正方形邊框愛心 -->
-          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          <svg viewBox="0 0 24 24" width="22" height="22"><line x1="22" y1="2" x2="11" y2="13" stroke="#222" stroke-width="2" stroke-linecap="round"></line><polygon points="22 2 15 22 11 13 2 9 22 2" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></polygon></svg>
-          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" fill="none" stroke="#222" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div class="grid-container" id="grid">
+          <div class="grid-item"></div>
+          <div class="grid-item"></div>
+          <div class="grid-item"></div>
+          <div class="grid-item"></div>
+          <!-- 中間 LOGO 圖片（已設置跨域代理服務器） -->
+          <div class="grid-item center-block locked-block">
+            <img src="https://corsproxy.io/?https://i.urusai.cc/pPFW8.jpg" alt="LOGO" id="logoImgElement" crossorigin="anonymous">
+          </div>
+          <div class="grid-item"></div>
+          <div class="grid-item"></div>
+          <div class="grid-item"></div>
+          <div class="grid-item"></div>
         </div>
-        <div class="tag-btn">DONE</div>
+
+        <div class="card-footer">
+          <div class="footer-icons">
+            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+          <div class="done-btn">DONE</div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn btn-download" id="downloadBtn">下載圖片</button>
+        <button class="btn btn-share" id="shareXBtn">發送到 X</button>
+      </div>
+
+      <div class="author-tag"><span id="t-author-label">製作者：</span>@YourHandle</div>
+    </div>
+
+    <!-- 2. 完成下載視圖 -->
+    <div id="downloadView" class="result-view">
+      <div class="result-card">
+        <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
+        <div class="result-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
+        
+        <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
+
+        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
+        <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
       </div>
     </div>
 
-    <div class="btn-group">
-      <button class="action-btn btn-download" id="downloadBtn">下載圖片</button>
-      <button class="action-btn btn-x" id="shareXBtn">發送到 X</button>
+    <!-- 3. QR Code 驚喜頁面視圖 -->
+    <div id="qrView" class="result-view">
+      <div class="result-card">
+        <div class="result-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
+        <div class="result-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
+
+        <img id="randomQrImg" class="qr-img" src="" alt="驚喜 QR Code">
+
+        <button class="btn btn-secondary" id="t-qr-back" onclick="switchToMain()">返回製作頁面</button>
+      </div>
     </div>
 
-    <div class="footer-author">
-      <span id="t-author-label">製作者：</span>
-      <a href="https://x.com/isakaichigo" target="_blank" rel="noopener noreferrer">@isakaichigo</a>
-    </div>
   </div>
 
-  <div id="downloadView" class="view-panel">
-    <div class="dl-title" id="t-dl-title">🎉 拼貼已完成！</div>
-    <div class="dl-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
-    <div class="result-img-container">
-      <img id="resultImage" src="" alt="生成的拼貼圖">
-    </div>
-    <button class="btn-next-qr" onclick="switchToQrPage()" id="t-btn-next-qr">查看獨家驚喜 QR Code 👉</button>
-    <button class="btn-back-editor" onclick="switchToMain()" id="t-btn-back-editor">← 返回繼續編輯</button>
-  </div>
-
-  <div id="qrView" class="view-panel">
-    <div class="qr-page-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
-    <div class="qr-page-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
-    <img src="" id="randomQrImg" class="qr-page-img" alt="隨機 QR Code">
-    <button class="back-btn" onclick="switchToMain()" id="t-qr-back">返回製作頁面</button>
-  </div>
+  <input type="file" id="fileInput" accept="image/*">
 
   <script>
     let currentTweetText = "";
@@ -655,7 +686,7 @@
       }
     });
 
-    /* 圓角矩形輔助畫筆 */
+    /* 圓角矩形繪製輔助函式 */
     function drawRoundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
@@ -680,7 +711,19 @@
       }
     }
 
-    /* 全原生純 Code Canvas 4K 超高清渲染 */
+    /* 讀取圖片 Promise，增加 crossOrigin 支援 */
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    /* 全原生純 Canvas 4K 超高清渲染 */
     async function generatePureCanvas() {
       items.forEach(i => i.classList.remove('selected'));
 
@@ -712,6 +755,13 @@
 
       const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
 
+      // 載入中間 LOGO 圖片
+      const logoImgElement = document.getElementById('logoImgElement');
+      let loadedLogoImg = null;
+      if (logoImgElement && logoImgElement.src) {
+        loadedLogoImg = await loadImage(logoImgElement.src);
+      }
+
       for (let index = 0; index < allGridElements.length; index++) {
         const item = allGridElements[index];
         const row = Math.floor(index / 3);
@@ -727,9 +777,8 @@
         ctx.clip();
 
         if (item.classList.contains('center-block')) {
-          const logoImg = document.getElementById('logoImgElement');
-          if (logoImg && logoImg.complete && logoImg.naturalWidth > 0) {
-            ctx.drawImage(logoImg, ix, iy, itemSize, itemSize);
+          if (loadedLogoImg) {
+            ctx.drawImage(loadedLogoImg, ix, iy, itemSize, itemSize);
           }
         } else if (item.loadedImageObj) {
           const img = item.loadedImageObj;
@@ -778,7 +827,7 @@
         ctx.restore();
       }
 
-      // 完美的正方形向量愛心，徹底防變形
+      // 完美的正方形向量愛心
       ctx.save(); ctx.translate(75, footerY - 30); ctx.scale(2.8, 2.8);
       drawPath("M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z", "#222222", 2.2);
       ctx.restore();
