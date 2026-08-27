@@ -235,7 +235,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* 可拖曳貼紙 (包含預設中心卡片) */
+    /* 可拖曳貼紙 (支援手機與電腦觸控/拖曳) */
     .placed-sticker {
       position: absolute;
       cursor: move;
@@ -246,27 +246,10 @@
     }
 
     .placed-sticker img {
-      width: 55px;
+      width: 65px;
       height: auto;
       display: block;
       pointer-events: none;
-    }
-
-    /* 預設正方形卡片貼紙樣式 */
-    .placed-sticker.default-center-card {
-      width: 52%;
-      aspect-ratio: 1 / 1;
-      border: 4px solid #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-      overflow: hidden;
-      background-color: #ff4757;
-    }
-
-    .placed-sticker.default-center-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     .placed-sticker.selected {
@@ -840,28 +823,16 @@
       fileInput.value = '';
     });
 
-    // 通用貼紙建立函式
-    function createSticker(srcUrl, isDefaultCard = false) {
+    // 貼紙建立函式 (支援跨平台移動、旋轉與縮放)
+    function createSticker(srcUrl) {
       const sticker = document.createElement('div');
-      sticker.className = 'placed-sticker' + (isDefaultCard ? ' default-center-card' : '');
+      sticker.className = 'placed-sticker';
       const img = document.createElement('img');
       img.src = srcUrl;
-      
-      if (isDefaultCard) {
-        img.onerror = function() {
-          this.style.display = 'none';
-          sticker.innerHTML = '<svg width="100%" height="100%" viewBox="0 0 100 100" style="background:#ff4757;"><text x="50%" y="42%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">2005.09.08</text><text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold" font-family="-apple-system, BlinkMacSystemFont, sans-serif">HAPPY MIN DAY</text></svg>';
-        };
-      }
       sticker.appendChild(img);
 
-      if (isDefaultCard) {
-        sticker.style.left = '24%';
-        sticker.style.top = '28%';
-      } else {
-        sticker.style.left = '40%';
-        sticker.style.top = '40%';
-      }
+      sticker.style.left = '40%';
+      sticker.style.top = '40%';
 
       let rotation = 0;
       let scale = 1;
@@ -913,9 +884,6 @@
 
       gridCard.appendChild(sticker);
     }
-
-    // 初始化：生成中間預設的浮動卡片貼紙
-    createSticker('center.png', true);
 
     // 貼紙選擇區點擊事件
     const stickerOptions = document.querySelectorAll('.sticker-option img');
