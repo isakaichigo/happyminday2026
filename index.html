@@ -54,9 +54,9 @@
     }
 
     .lang-btn.active {
-      background-color: #F8B62D;
+      background-color: #F39800;
       color: #ffffff;
-      border-color: #F8B62D;
+      border-color: #F39800;
     }
 
     /* 主卡片容器 */
@@ -71,7 +71,7 @@
 
     /* 頂部橘色區塊 */
     .captcha-header {
-      background-color: #F8B62D;
+      background-color: #F39800;
       border-radius: 8px;
       padding: 16px 20px;
       color: #ffffff;
@@ -130,7 +130,7 @@
     }
 
     .grid-item.selected {
-      outline: 3px solid #F8B62D;
+      outline: 3px solid #F39800;
       outline-offset: -3px;
       z-index: 2;
     }
@@ -206,7 +206,7 @@
 
     .zoom-control input {
       width: 100%;
-      accent-color: #F8B62D;
+      accent-color: #F39800;
     }
 
     /* 底部社群列 */
@@ -234,7 +234,7 @@
     }
 
     .done-btn {
-      background-color: #F8B62D;
+      background-color: #F39800;
       color: #ffffff;
       font-weight: 900;
       font-style: italic;
@@ -269,7 +269,7 @@
     }
 
     .btn-download {
-      background-color: #F8B62D;
+      background-color: #F39800;
       color: #ffffff;
     }
 
@@ -368,9 +368,10 @@
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           <div class="grid-item"></div>
-          <!-- 中間 LOGO 圖片（已更新網址） -->
+          <!-- 中間 LOGO 圖片（已設置跨域代理服務器） -->
           <div class="grid-item center-block locked-block">
-           <img src="https://i.urusai.cc/4a9sf.jpg" alt="LOGO" id="logoImgElement" crossorigin="anonymous">
+            <img src="https://corsproxy.io/?https://i.urusai.cc/pPFW8.jpg" alt="LOGO" id="logoImgElement" crossorigin="anonymous">
+          </div>
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           <div class="grid-item"></div>
@@ -735,7 +736,7 @@
       drawRoundRect(ctx, 24, 24, 1296, 1712, 32, '#FFFFFF', '#E0E0E0', 8);
 
       // 2. 頂部橘色 Header 區塊
-      drawRoundRect(ctx, 72, 72, 1200, 260, 16, '#F8B62D');
+      drawRoundRect(ctx, 72, 72, 1200, 260, 16, '#F39800');
 
       // 3. Header 文字
       ctx.textAlign = 'left';
@@ -847,7 +848,7 @@
       ctx.restore();
 
       // DONE 按鈕
-      drawRoundRect(ctx, 1020, footerY - 35, 250, 90, 16, '#F8B62D');
+      drawRoundRect(ctx, 1020, footerY - 35, 250, 90, 16, '#F39800');
       ctx.fillStyle = '#FFFFFF';
       ctx.font = 'italic 900 48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textAlign = 'center';
