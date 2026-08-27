@@ -135,12 +135,15 @@
       z-index: 2;
     }
 
-    /* 中間固定區塊 */
-    .grid-item.locked-block {
-      background-color: #ffffff;
-      cursor: default;
-    }
-
+   /* 中間固定區塊 - 強化存在感 */
+.grid-item.locked-block {
+  background-color: #111111; /* 改成酷炫黑底 */
+  border: 4px solid #ffffff; /* 加上白邊框 */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3); /* 加上立體陰影 */
+  border-radius: 8px; /* 稍微圓角 */
+  z-index: 5;
+  transform: scale(1.03); /* 微微放大一點點 */
+}
     .grid-item.locked-block::before {
       display: none;
     }
