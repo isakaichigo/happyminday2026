@@ -93,7 +93,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* 中間 3x3 九宮格 */
+    /* 中間標準 3x3 九宮格 */
     .grid-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr); 
@@ -199,32 +199,6 @@
       cursor: pointer;
     }
 
-    /* 中間固定正方形區塊 (調整為 1:1 正方形) */
-    .grid-item.center-item {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 15;
-      width: 52%;
-      aspect-ratio: 1 / 1;
-      border: 4px solid #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
-      background-color: #ff4757;
-      cursor: default;
-      overflow: hidden;
-    }
-    .grid-item.center-item::before {
-      display: none;
-    }
-    .grid-item.center-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
     /* 底部社群互動欄 */
     .captcha-footer {
       display: flex;
@@ -261,7 +235,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* 可拖曳貼紙 */
+    /* 可拖曳貼紙 (包含預設中心卡片) */
     .placed-sticker {
       position: absolute;
       cursor: move;
@@ -276,6 +250,23 @@
       height: auto;
       display: block;
       pointer-events: none;
+    }
+
+    /* 預設正方形卡片貼紙樣式 */
+    .placed-sticker.default-center-card {
+      width: 52%;
+      aspect-ratio: 1 / 1;
+      border: 4px solid #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+      overflow: hidden;
+      background-color: #ff4757;
+    }
+
+    .placed-sticker.default-center-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .placed-sticker.selected {
@@ -514,25 +505,17 @@
         <span class="main-title" id="t-captcha-main">HAPPY MIN DAY 2026</span>
       </div>
 
-      <!-- 九宮格畫布 -->
+      <!-- 完整 3x3 九宮格畫布 -->
       <div class="grid-container" id="grid">
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
-        
-        <!-- 中間佔位 -->
-        <div></div> 
-        
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
         <div class="grid-item"></div>
-
-        <!-- 中間固定正方形區塊 -->
-        <div class="grid-item center-item">
-          <img src="center.png" alt="MIN 生日 Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<svg width=\'100%\' height=\'100%\' viewBox=\'0 0 100 100\' style=\'background:#ff4757;\'><text x=\'50%\' y=\'42%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#ffffff\' font-size=\'10\' font-family=\'-apple-system, BlinkMacSystemFont, sans-serif\'>2005.09.08</text><text x=\'50%\' y=\'60%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'#ffffff\' font-size=\'11\' font-weight=\'bold\' font-family=\'-apple-system, BlinkMacSystemFont, sans-serif\'>HAPPY MIN DAY</text></svg>'">
-        </div>
+        <div class="grid-item"></div>
       </div>
 
       <!-- 底部社群 Icon 區 -->
@@ -743,7 +726,7 @@
     }
 
     const fileInput = document.getElementById('fileInput');
-    const items = document.querySelectorAll('.grid-item:not(.center-item)');
+    const items = document.querySelectorAll('.grid-item');
     const downloadBtn = document.getElementById('downloadBtn');
     const shareXBtn = document.getElementById('shareXBtn');
     const gridCard = document.getElementById('gridCard');
@@ -857,23 +840,28 @@
       fileInput.value = '';
     });
 
-    // 貼紙邏輯
-    const stickerOptions = document.querySelectorAll('.sticker-option img');
-    stickerOptions.forEach(imgEl => {
-      imgEl.parentElement.addEventListener('click', () => {
-        createSticker(imgEl.src);
-      });
-    });
-
-    function createSticker(srcUrl) {
+    // 通用貼紙建立函式
+    function createSticker(srcUrl, isDefaultCard = false) {
       const sticker = document.createElement('div');
-      sticker.className = 'placed-sticker';
+      sticker.className = 'placed-sticker' + (isDefaultCard ? ' default-center-card' : '');
       const img = document.createElement('img');
       img.src = srcUrl;
+      
+      if (isDefaultCard) {
+        img.onerror = function() {
+          this.style.display = 'none';
+          sticker.innerHTML = '<svg width="100%" height="100%" viewBox="0 0 100 100" style="background:#ff4757;"><text x="50%" y="42%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="10" font-family="-apple-system, BlinkMacSystemFont, sans-serif">2005.09.08</text><text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="11" font-weight="bold" font-family="-apple-system, BlinkMacSystemFont, sans-serif">HAPPY MIN DAY</text></svg>';
+        };
+      }
       sticker.appendChild(img);
 
-      sticker.style.left = '40%';
-      sticker.style.top = '40%';
+      if (isDefaultCard) {
+        sticker.style.left = '24%';
+        sticker.style.top = '28%';
+      } else {
+        sticker.style.left = '40%';
+        sticker.style.top = '40%';
+      }
 
       let rotation = 0;
       let scale = 1;
@@ -925,6 +913,17 @@
 
       gridCard.appendChild(sticker);
     }
+
+    // 初始化：生成中間預設的浮動卡片貼紙
+    createSticker('center.png', true);
+
+    // 貼紙選擇區點擊事件
+    const stickerOptions = document.querySelectorAll('.sticker-option img');
+    stickerOptions.forEach(imgEl => {
+      imgEl.parentElement.addEventListener('click', () => {
+        createSticker(imgEl.src);
+      });
+    });
 
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.placed-sticker')) {
