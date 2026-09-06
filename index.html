@@ -118,7 +118,7 @@
       background-color: #e8e8e8;
     }
 
-    /* 預設加號標誌 */
+    /* 預設加號標誌（排除鎖定的中間格） */
     .grid-item:not(.locked-block)::before {
       content: '+';
       font-size: 36px;
@@ -141,10 +141,10 @@
       overflow: visible !important;
       background-color: transparent;
       cursor: default !important;
-      z-index: 5;
+      z-index: 3;
     }
 
-    /* 中間固定底圖 */
+    /* 中間固定圖片 */
     .center-user-photo {
       position: absolute;
       top: 0;
@@ -153,22 +153,21 @@
       height: 100%;
       background-size: cover;
       background-position: center;
-      background-image: url('https://i.urusai.cc/9iZ0f.jpg'); 
+      background-image: url('https://i.urusai.cc/GzUNv.jpg'); 
       z-index: 1;
     }
 
-    /* 上層蓋住的拍立得外框 (浮起效果) */
+    /* 上層蓋住的拍立得框 PNG */
     .polaroid-frame-overlay {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%) scale(1.08);
-      width: 108%;
+      transform: translate(-50%, -52%) scale(1.05);
+      width: 104%;
       height: auto;
       pointer-events: none;
       z-index: 5;
-      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
-      object-fit: contain;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
     }
 
     /* 圖片包裹與拉桿 */
@@ -349,6 +348,7 @@
       margin-top: 10px;
     }
 
+    /* 三個 QR Code 容器 */
     .qr-container-triple {
       display: flex;
       justify-content: space-around;
@@ -394,6 +394,7 @@
       word-break: break-all;
     }
 
+    /* 隱藏檔案輸入 */
     #fileInput, .qr-file-input {
       display: none;
     }
@@ -425,7 +426,7 @@
           
           <div class="grid-item locked-block" id="centerGridItem">
             <div class="center-user-photo" id="centerFixedPhoto"></div>
-            <img src="https://i.urusai.cc/GzUNv.jpg" class="polaroid-frame-overlay" id="polaroidOverlayImg" crossorigin="anonymous">
+            <img src="https://i.urusai.cc/GzUNv.jpg" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
           </div>
           
           <div class="grid-item"></div>
@@ -458,7 +459,7 @@
         <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
         <div class="result-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
         
-        <img id="resultImage" class="result-img-preview" src="">
+        <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
 
         <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
         <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
@@ -471,21 +472,24 @@
         <div class="result-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 或點擊連結獲取專屬內容：</div>
 
         <div class="qr-container-triple">
+          <!-- 台灣 -->
           <div class="qr-block">
             <div class="qr-country-label">🇹🇼 台灣</div>
-            <img id="qrImgTW" class="qr-img" src="https://via.placeholder.com/150?text=Upload+TW" onclick="triggerQrUpload('TW')">
+            <img id="qrImgTW" class="qr-img" src="https://via.placeholder.com/150?text=Upload+TW" alt="台灣 QR Code" onclick="triggerQrUpload('TW')">
             <a id="qrLinkTW" class="qr-link" href="#" target="_blank">點此開啟連結</a>
           </div>
 
+          <!-- 韓國 -->
           <div class="qr-block">
             <div class="qr-country-label">🇰🇷 韓國</div>
-            <img id="qrImgKR" class="qr-img" src="https://via.placeholder.com/150?text=Upload+KR" onclick="triggerQrUpload('KR')">
+            <img id="qrImgKR" class="qr-img" src="https://via.placeholder.com/150?text=Upload+KR" alt="韓國 QR Code" onclick="triggerQrUpload('KR')">
             <a id="qrLinkKR" class="qr-link" href="#" target="_blank">點此開啟連結</a>
           </div>
 
+          <!-- 日本 -->
           <div class="qr-block">
             <div class="qr-country-label">🇯🇵 日本</div>
-            <img id="qrImgJP" class="qr-img" src="https://via.placeholder.com/150?text=Upload+JP" onclick="triggerQrUpload('JP')">
+            <img id="qrImgJP" class="qr-img" src="https://via.placeholder.com/150?text=Upload+JP" alt="日本 QR Code" onclick="triggerQrUpload('JP')">
             <a id="qrLinkJP" class="qr-link" href="#" target="_blank">點此開啟連結</a>
           </div>
         </div>
@@ -503,6 +507,9 @@
   <input type="file" id="qrFileInputJP" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'JP')">
 
   <script>
+    // 中間照片的統一來源網址
+    const CENTER_IMAGE_URL = 'https://i.urusai.cc/GzUNv.jpg';
+
     let currentTweetText = "";
     let currentHashtags = "";
 
@@ -784,6 +791,7 @@
       }
     });
 
+    /* 圓角矩形繪製輔助函式 */
     function drawRoundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
@@ -808,17 +816,25 @@
       }
     }
 
+    /* 讀取圖片 Promise（優化跨域圖片處理機制） */
     function loadImage(src) {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
-        img.onerror = () => resolve(null);
+        img.onerror = () => {
+          // 如果跨域失敗，嘗試不帶 crossOrigin 重試
+          const retryImg = new Image();
+          retryImg.onload = () => resolve(retryImg);
+          retryImg.onerror = () => resolve(null);
+          retryImg.src = src;
+        };
         img.src = src;
       });
     }
 
+    /* 全原生純 Canvas 渲染 */
     async function generatePureCanvas() {
       items.forEach(i => i.classList.remove('selected'));
 
@@ -827,10 +843,10 @@
       canvas.height = 1760;
       const ctx = canvas.getContext('2d');
 
-      // 1. 背景卡片
+      // 1. 卡片外框與背景
       drawRoundRect(ctx, 24, 24, 1296, 1712, 32, '#FFFFFF', '#E0E0E0', 8);
 
-      // 2. 頂部橘色 Header
+      // 2. 頂部橘色 Header 區塊
       drawRoundRect(ctx, 72, 72, 1200, 260, 16, '#F8B62D');
 
       // 3. Header 文字
@@ -850,12 +866,13 @@
 
       const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
 
-      // 載入中間底圖與拍立得邊框
-      const centerInnerImgUrl = 'https://i.urusai.cc/9iZ0f.jpg';
-      const centerFrameImgUrl = 'https://i.urusai.cc/GzUNv.jpg';
-
-      const loadedCenterInner = await loadImage(centerInnerImgUrl);
-      const loadedCenterFrame = await loadImage(centerFrameImgUrl);
+      // 載入中間預設圖片與框
+      const loadedCenterPhoto = await loadImage(CENTER_IMAGE_URL);
+      const overlayImgElement = document.getElementById('polaroidOverlayImg');
+      let loadedOverlayImg = null;
+      if (overlayImgElement && overlayImgElement.src) {
+        loadedOverlayImg = await loadImage(overlayImgElement.src);
+      }
 
       for (let index = 0; index < allGridElements.length; index++) {
         const item = allGridElements[index];
@@ -873,8 +890,8 @@
         ctx.clip();
 
         if (isCenterBlock) {
-          if (loadedCenterInner) {
-            ctx.drawImage(loadedCenterInner, ix, iy, itemSize, itemSize);
+          if (loadedCenterPhoto) {
+            ctx.drawImage(loadedCenterPhoto, ix, iy, itemSize, itemSize);
           }
         } else if (item.loadedImageObj) {
           const img = item.loadedImageObj;
@@ -908,24 +925,24 @@
         }
         ctx.restore();
 
-        // 中間格繪製浮起的拍立得外框與陰影
-        if (isCenterBlock && loadedCenterFrame) {
+        // 中間格繪製外框
+        if (isCenterBlock && loadedOverlayImg) {
           ctx.save();
-          ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-          ctx.shadowBlur = 20;
-          ctx.shadowOffsetY = 10;
+          ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+          ctx.shadowBlur = 14;
+          ctx.shadowOffsetY = 6;
           
-          const frameW = itemSize * 1.08;
-          const frameH = itemSize * 1.08;
+          const frameW = itemSize * 1.04;
+          const frameH = itemSize * 1.04;
           const frameX = ix - (frameW - itemSize) / 2;
-          const frameY = iy - (frameH - itemSize) / 2;
+          const frameY = iy - (frameH - itemSize) / 2 - 30;
 
-          ctx.drawImage(loadedCenterFrame, frameX, frameY, frameW, frameH);
+          ctx.drawImage(loadedOverlayImg, frameX, frameY, frameW, frameH);
           ctx.restore();
         }
       }
 
-      // 5. 底部圖示與 DONE 按鈕
+      // 5. 底部圖示與按鈕區塊
       const footerY = 1630;
 
       function drawPath(pathStr, strokeColor, lineWidth = 8) {
