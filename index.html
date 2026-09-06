@@ -1,129 +1,134 @@
+明白！如果是**固定由你置入圖片網址、不允許前台使用者上傳或修改**的中間格，只要把中間格的點擊、縮放與拖曳事件鎖住，並將圖片寫死為你的網址即可。
+這裡為你調整好了，修改重點如下：
+ 1. **鎖定中間格**：點擊中間格不會觸發上傳檔案，縮放與拖曳功能也不會作用於中間格。
+ 2. **固定圖片網址**：你可以直接在 CSS 的 .center-user-photo 替換你的圖片網址（YOUR_IMAGE_URL.jpg）。
+ 3. **Canvas 生成時鎖定**：下載輸出時會自動抓取你設定好的圖片，繪製在拍立得框底層。
+### 📄 修改後的完整程式碼：
+```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>HAPPY MINDAY 2026</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HAPPY MIN DAY 2026 - Photo Collage</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       user-select: none;
       -webkit-user-select: none;
     }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 10px;
-      background-color: #f5f5f5;
-      color: #333;
-    }
-
-    /* 多語言切換區 */
-    .lang-switch {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 12px;
-      align-self: flex-end;
-      max-width: 360px;
-      width: 100%;
-      justify-content: flex-end;
-    }
-    .lang-btn {
-      background: #fff;
-      border: 1px solid #ccc;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: #fed32c;
-      color: #000;
-      border-color: #fed32c;
-      font-weight: bold;
-    }
-
-    /* 視圖切換容器 */
-    .view-panel {
-      width: 100%;
-      max-width: 360px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* CAPTCHA 風格主外框卡片 */
-    .captcha-card {
-      width: 100%;
-      background: #ffffff;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-      margin-bottom: 15px;
-      position: relative;
-    }
-
-    /* 頂部黃色標題區 */
-    .captcha-header {
-      background-color: #fed32c;
-      padding: 14px 16px;
-      border-radius: 4px;
-      margin-bottom: 10px;
-      color: #000000;
-      font-family: "Courier New", Courier, monospace, sans-serif;
-    }
-    .captcha-header .sub-title {
-      font-size: 13px;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      display: block;
-      margin-bottom: 2px;
-    }
-    .captcha-header .main-title {
-      font-size: 26px;
-      font-weight: 900;
-      font-style: italic;
-      line-height: 1.1;
-      letter-spacing: 0.5px;
-    }
-
-    /* 中間 3x3 九宮格 */
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); 
-      grid-template-rows: repeat(3, 1fr); 
-      gap: 3px;
-      width: 100%;
-      aspect-ratio: 1 / 1;
-      background-color: #ffffff;
-      overflow: hidden;
-      position: relative;
-      margin-bottom: 12px;
-    }
-
-    /* 格子基本樣式 */
-    .grid-item {
-      width: 100%;
-      height: 100%;
-      background-color: #f2f2f2;
-      position: relative;
-      cursor: pointer;
+      background-color: #f5f5f7;
       display: flex;
       justify-content: center;
       align-items: center;
-      overflow: hidden;
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
     }
 
-    .grid-item::before {
-      content: "+";
-      font-size: 32px;
+    .view-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* 多語言切換按鈕 */
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .lang-btn {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn.active {
+      background-color: #F8B62D;
+      color: #ffffff;
+      border-color: #F8B62D;
+    }
+
+    /* 主卡片容器 */
+    .card-container {
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      border: 2px solid #e0e0e0;
+      width: 100%;
+    }
+
+    /* 頂部橘色區塊 */
+    .captcha-header {
+      background-color: #F8B62D;
+      border-radius: 8px;
+      padding: 16px 20px;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .captcha-sub {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-bottom: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .captcha-main {
+      font-size: 26px;
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.5px;
+    }
+
+    /* 九宮格容器 */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background-color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .grid-item {
+      aspect-ratio: 1 / 1;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .grid-item:hover {
+      background-color: #e8e8e8;
+    }
+
+    /* 預設加號標誌（排除鎖定的中間格） */
+    .grid-item:not(.locked-block)::before {
+      content: '+';
+      font-size: 36px;
       color: #bbb;
       font-weight: 300;
     }
@@ -132,364 +137,229 @@
       display: none;
     }
 
-    /* 上傳照片容器 */
-    .img-wrapper {
-      width: 100%;
-      height: 100%;
+    .grid-item.selected {
+      outline: 3px solid #F8B62D;
+      outline-offset: -3px;
+      z-index: 2;
+    }
+
+    /* 中間固定浮起格 */
+    .grid-item.locked-block {
+      overflow: visible !important;
+      background-color: transparent;
+      cursor: default !important;
+      z-index: 3;
+    }
+
+    /* 中間你寫死的固定圖片 */
+    .center-user-photo {
       position: absolute;
       top: 0;
       left: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      transform-origin: center center;
-      touch-action: none;
+      width: 100%;
+      height: 100%;
       background-size: cover;
       background-position: center;
+      /* 👇 在這裡放入你想寫死的中間圖片網址 */
+      background-image: url('YOUR_IMAGE_URL.jpg'); 
+      z-index: 1;
     }
 
-    /* 格子刪除按鈕 */
+    /* 上層蓋住的拍立得框 PNG */
+    .polaroid-frame-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -42%) scale(1.05);
+      width: 104%;
+      height: auto;
+      pointer-events: none;
+      z-index: 5;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
+    }
+
+    /* 圖片包裹與拉桿 */
+    .img-wrapper {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      transform-origin: center center;
+    }
+
     .delete-btn {
-      display: none;
       position: absolute;
       top: 4px;
       right: 4px;
       background: rgba(0, 0, 0, 0.6);
-      color: #fff;
+      color: white;
       border: none;
       border-radius: 50%;
       width: 22px;
       height: 22px;
-      font-size: 14px;
-      line-height: 22px;
-      text-align: center;
+      font-size: 12px;
+      display: none;
+      justify-content: center;
+      align-items: center;
       cursor: pointer;
       z-index: 10;
     }
 
-    .grid-item.has-image:hover .delete-btn,
-    .grid-item.has-image.selected .delete-btn {
-      display: block;
+    .grid-item:not(.locked-block).has-image:hover .delete-btn,
+    .grid-item:not(.locked-block).selected .delete-btn {
+      display: flex;
     }
 
-    /* 格子照片縮放控制條 */
     .zoom-control {
-      display: none;
       position: absolute;
       bottom: 4px;
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
-      z-index: 10;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255, 255, 255, 0.9);
       padding: 2px 6px;
       border-radius: 10px;
+      display: none;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    .grid-item.selected .zoom-control {
+    .grid-item:not(.locked-block).selected .zoom-control {
       display: flex;
-      align-items: center;
     }
 
     .zoom-control input {
       width: 100%;
-      cursor: pointer;
-      accent-color: #fed32c;
+      accent-color: #F8B62D;
     }
 
-    /* 中間固定正方形格 (第5格) */
-    .grid-item.center-item {
-      background-color: #ff4757;
-      cursor: default;
-    }
-    .grid-item.center-item::before {
-      display: none;
-    }
-
-    /* 底部社群互動欄 */
-    .captcha-footer {
+    /* 底部社群列 */
+    .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 2px 0 2px;
+      padding: 4px 4px 0 4px;
     }
 
-    .social-icons {
+    .footer-icons {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
     }
 
-    .social-icons svg {
-      width: 20px;
-      height: 20px;
+    .footer-icons svg {
+      width: 22px;
+      height: 22px;
       fill: none;
       stroke: #222;
-      stroke-width: 2;
+      stroke-width: 2.2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    .tag-btn {
-      background-color: #fed32c;
-      color: #000;
+    .done-btn {
+      background-color: #F8B62D;
+      color: #ffffff;
       font-weight: 900;
       font-style: italic;
-      font-family: "Courier New", Courier, monospace, sans-serif;
-      padding: 6px 16px;
-      border-radius: 4px;
-      font-size: 14px;
+      font-size: 18px;
+      padding: 8px 24px;
+      border-radius: 6px;
       letter-spacing: 0.5px;
     }
 
-    /* 可拖曳貼紙 */
-    .placed-sticker {
-      position: absolute;
-      cursor: move;
-      z-index: 20;
-      transform-origin: center center;
-      touch-action: none;
-      display: inline-block;
-    }
-
-    .placed-sticker img {
-      width: 55px;
-      height: auto;
-      display: block;
-      pointer-events: none;
-    }
-
-    .placed-sticker.selected {
-      outline: 1.5px dashed #000;
-      border-radius: 4px;
-    }
-
-    /* 貼紙選擇區 */
-    .sticker-selector {
+    /* 操作按鈕區 */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
       width: 100%;
-      background: #fff;
-      padding: 12px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 15px;
+      margin-top: 16px;
     }
 
-    .sticker-title {
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+      text-align: center;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-download {
+      background-color: #F8B62D;
+      color: #ffffff;
+    }
+
+    .btn-share {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .author-tag {
+      margin-top: 12px;
       font-size: 12px;
-      font-weight: bold;
-      color: #666;
+      color: #888;
+      text-align: center;
+    }
+
+    /* 完成與 QR Code 頁面樣式 */
+    .result-view {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .result-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+      width: 100%;
+      text-align: center;
+    }
+
+    .result-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #222;
       margin-bottom: 8px;
     }
 
-    .sticker-list {
-      display: flex;
-      gap: 12px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-      align-items: center;
-    }
-
-    .sticker-option {
-      width: 44px;
-      height: 44px;
-      background: #f9f9f9;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      padding: 4px;
-      cursor: pointer;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s;
-    }
-
-    .sticker-option:active {
-      transform: scale(0.9);
-    }
-
-    .sticker-option img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-
-    /* 輸入區塊 */
-    .form-container {
-      width: 100%;
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 15px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 10px;
-    }
-
-    .form-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .form-group label {
-      font-size: 13px;
-      font-weight: bold;
-      color: #555;
-      margin-bottom: 4px;
-    }
-
-    .form-group input, .form-group textarea {
-      padding: 8px 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      height: 55px;
-    }
-
-    /* 按鈕區 */
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      width: 100%;
-      margin-bottom: 15px;
-    }
-
-    .action-btn {
-      flex: 1;
-      padding: 12px 10px;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      transition: transform 0.1s;
-      text-align: center;
-    }
-    .action-btn:active {
-      transform: scale(0.96);
-    }
-    
-    .btn-download {
-      background-color: #2ed573;
-    }
-    .btn-x {
-      background-color: #000000;
-    }
-
-    /* 頁尾帳號標示區 */
-    .footer-author {
-      font-size: 12px;
-      color: #777;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .footer-author a {
-      color: #333;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    /* 下載圖片預覽頁面 View */
-    #downloadView {
-      display: none;
-      text-align: center;
-      background: #fff;
-      padding: 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .dl-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #2ed573;
-      margin-bottom: 6px;
-    }
-
-    .dl-desc {
-      font-size: 13px;
+    .result-desc {
+      font-size: 13.5px;
       color: #666;
-      margin-bottom: 15px;
-    }
-
-    .result-img-container {
-      width: 100%;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    }
-
-    .result-img-container img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: contain;
-    }
-
-    .btn-next-qr {
-      background: #fed32c;
-      color: #000;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 10px;
-      box-shadow: 0 4px 10px rgba(254,211,44,0.4);
-    }
-
-    .btn-back-editor {
-      background: #eee;
-      color: #333;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    /* 全螢幕 QR 跳轉頁面 View */
-    #qrView {
-      display: none;
-      text-align: center;
-      background: #fff;
-      padding: 30px 20px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .qr-page-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #ff4757;
-      margin-bottom: 10px;
-    }
-
-    .qr-page-desc {
-      font-size: 13px;
-      color: #666;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       line-height: 1.5;
     }
 
-    .qr-page-img {
+    .result-img-preview {
+      width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .btn-secondary {
+      background-color: #f2f2f7;
+      color: #333;
+      margin-top: 10px;
+    }
+
+    .qr-img {
       width: 220px;
       height: 220px;
-      margin: 0 auto 20px auto;
+      margin: 10px auto 20px auto;
       border-radius: 12px;
       display: block;
       border: 1px solid #eee;
@@ -502,34 +372,32 @@
 </head>
 <body>
 
-  <!-- 多語言切換區 -->
-  <div class="lang-switch">
-    <button class="lang-btn active" onclick="setLanguage('zh', event)">繁體中文</button>
-    <button class="lang-btn" onclick="setLanguage('ja', event)">日本語</button>
-    <button class="lang-btn" onclick="setLanguage('ko', event)">한국어</button>
-    <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
-  </div>
+  <div class="view-container">
 
-  <div class="view-panel">
-    
-    <!-- 1. 主要編輯檢視區 -->
-    <div id="mainView" style="width: 100%;">
-      
-      <!-- 卡片內容 -->
-      <div class="captcha-card" id="captchaCard">
+    <div class="lang-switch">
+      <button class="lang-btn active" onclick="setLanguage('zh', event)">繁體中文</button>
+      <button class="lang-btn" onclick="setLanguage('ja', event)">日本語</button>
+      <button class="lang-btn" onclick="setLanguage('ko', event)">한국어</button>
+      <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
+    </div>
+
+    <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+      <div class="card-container" id="collageCard">
         <div class="captcha-header">
-          <span class="sub-title" id="t-captcha-sub">select all images with MIN's color</span>
-          <span class="main-title" id="t-captcha-main">HAPPY MINDAY 2026</span>
+          <div class="captcha-sub" id="t-captcha-sub">select all images with MIN's color</div>
+          <div class="captcha-main" id="t-captcha-main">HAPPY MIN DAY 2026</div>
         </div>
 
-        <div class="grid-container" id="gridContainer">
+        <div class="grid-container" id="grid">
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           
-          <!-- 中間第5格固定區塊 -->
-          <div class="grid-item center-item"></div>
+          <div class="grid-item locked-block" id="centerGridItem">
+            <div class="center-user-photo" id="centerFixedPhoto"></div>
+            <img src="https://i.ibb.co/JjWSpqmY/minminmin-02.jpg" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
+          </div>
           
           <div class="grid-item"></div>
           <div class="grid-item"></div>
@@ -537,81 +405,46 @@
           <div class="grid-item"></div>
         </div>
 
-        <div class="captcha-footer">
-          <div class="social-icons">
+        <div class="card-footer">
+          <div class="footer-icons">
             <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
             <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
             <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
             <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
           </div>
-          <div class="tag-btn">VERIFY</div>
+          <div class="done-btn">DONE</div>
         </div>
       </div>
 
-      <!-- 貼紙選擇區 -->
-      <div class="sticker-selector">
-        <div class="sticker-title" id="t-sticker-title">點擊新增貼紙至圖片：</div>
-        <div class="sticker-list">
-          <div class="sticker-option" onclick="addSticker('https://api.iconify.design/twemoji:heart-suit.svg')">
-            <img src="https://api.iconify.design/twemoji:heart-suit.svg" alt="Heart">
-          </div>
-          <div class="sticker-option" onclick="addSticker('https://api.iconify.design/twemoji:glowing-star.svg')">
-            <img src="https://api.iconify.design/twemoji:glowing-star.svg" alt="Star">
-          </div>
-          <div class="sticker-option" onclick="addSticker('https://api.iconify.design/twemoji:party-popper.svg')">
-            <img src="https://api.iconify.design/twemoji:party-popper.svg" alt="Party">
-          </div>
-          <div class="sticker-option" onclick="addSticker('https://api.iconify.design/twemoji:birthday-cake.svg')">
-            <img src="https://api.iconify.design/twemoji:birthday-cake.svg" alt="Cake">
-          </div>
-        </div>
+      <div class="action-buttons">
+        <button class="btn btn-download" id="downloadBtn">下載圖片</button>
+        <button class="btn btn-share" id="shareXBtn">發送到 X</button>
       </div>
 
-      <!-- 文字輸入區塊 -->
-      <div class="form-container">
-        <div class="form-group">
-          <label id="t-lbl-text" for="tweetContent">推文內文：</label>
-          <textarea id="tweetContent" placeholder="輸入你想發送的文字..."></textarea>
-        </div>
-        <div class="form-group">
-          <label id="t-lbl-tag" for="tweetHashtags">Hashtags：</label>
-          <input type="text" id="tweetHashtags" placeholder="HAPPY_MINDAY_2026,MIN">
-        </div>
-      </div>
-
-      <!-- 操作按鈕 -->
-      <div class="btn-group">
-        <button class="action-btn btn-download" id="downloadBtn">下載圖片</button>
-        <button class="action-btn btn-x" id="shareXBtn">發送到 X</button>
-      </div>
-
-      <div class="footer-author">
-        <span id="t-author-label">製作者：</span><a href="https://x.com/isakaichigo" target="_blank">@isakaichigo</a>
-      </div>
-
+      <div class="author-tag"><span id="t-author-label">製作者：</span>@isakaichigo</div>
     </div>
 
-    <!-- 2. 下載檢視區 -->
-    <div id="downloadView">
-      <div class="dl-title" id="t-dl-title">🎉 拼貼已完成！</div>
-      <div class="dl-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
-      
-      <div class="result-img-container">
-        <img id="resultImage" src="" alt="生成的拼貼圖">
-      </div>
+    <div id="downloadView" class="result-view">
+      <div class="result-card">
+        <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
+        <div class="result-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
+        
+        <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
 
-      <button class="btn-next-qr" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
-      <button class="btn-back-editor" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
+        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
+        <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
+      </div>
     </div>
 
-    <!-- 3. 驚喜 QR Code 頁面 -->
-    <div id="qrView">
-      <div class="qr-page-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
-      <div class="qr-page-desc" id="t-qr-desc">感謝參與 HAPPY MINDAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
+    <div id="qrView" class="result-view">
+      <div class="result-card">
+        <div class="result-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
+        <div class="result-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 獲取專屬內容：</div>
 
-      <img id="randomQrImg" class="qr-page-img" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://x.com/isakaichigo" alt="驚喜 QR Code">
+        <img id="randomQrImg" class="qr-img" src="" alt="驚喜 QR Code">
 
-      <button class="btn-back-editor" id="t-qr-back" onclick="switchToMain()">返回製作頁面</button>
+        <button class="btn btn-secondary" id="t-qr-back" onclick="switchToMain()">返回製作頁面</button>
+      </div>
     </div>
 
   </div>
@@ -619,82 +452,74 @@
   <input type="file" id="fileInput" accept="image/*">
 
   <script>
-    // 多語言翻譯配置
+    let currentTweetText = "";
+    let currentHashtags = "";
+
+    const qrCodeList = ['qr1.png', 'qr2.png', 'qr3.png'];
+
     const i18n = {
       zh: {
         captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MINDAY 2026",
-        stickerTitle: "點擊新增貼紙至圖片：",
-        lblText: "推文內文：",
-        lblTag: "Hashtags：",
-        defaultText: "Happy MIN Day! 祝 MIN 生日快樂！🎉",
+        captchaMain: "HAPPY MIN DAY 2026",
+        defaultText: "在這裡貼上你希望顯示的中文內文！",
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "下載圖片",
-        btnX: "發送到 X",
+        btnShareX: "發送到 X",
         authorLabel: "製作者：",
         dlTitle: "🎉 拼貼已完成！",
         dlDesc: "請【長按下方圖片】選擇「儲存影像」存至手機相簿：",
         btnNextQr: "查看獨家驚喜 QR Code 👉",
         btnBackEditor: "← 返回繼續編輯",
         qrTitle: "🎁 獲得獨家驚喜 QR Code！",
-        qrDesc: "感謝參與 HAPPY MINDAY 2026！<br>掃描下方 QR Code 獲取專屬內容：",
+        qrDesc: "感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 獲取專屬內容：",
         qrBack: "返回製作頁面"
       },
       ja: {
         captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MINDAY 2026",
-        stickerTitle: "クリックしてステッカーを追加：",
-        lblText: "ツイート本文：",
-        lblTag: "ハッシュタグ：",
-        defaultText: "MINお誕生日おめでとう！🎉",
+        captchaMain: "HAPPY MIN DAY 2026",
+        defaultText: "ここにXへ投稿する日文の文章を入力してください！",
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "画像を保存",
-        btnX: "X に投稿",
-        authorLabel: "製作者：",
+        btnShareX: "X に投稿",
+        authorLabel: "Created by ",
         dlTitle: "🎉 コラージュが完成しました！",
         dlDesc: "【画像を長押し】して「写真に保存」を選択してください：",
         btnNextQr: "サプライズ QR コードを見る 👉",
         btnBackEditor: "← 編集に戻る",
         qrTitle: "🎁 特別なサプライズ QR コード！",
-        qrDesc: "HAPPY MINDAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
+        qrDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
         qrBack: "作成画面に戻る"
       },
       ko: {
         captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MINDAY 2026",
-        stickerTitle: "스티커를 클릭하여 추가하세요:",
-        lblText: "트윗 내용:",
-        lblTag: "해시태그:",
-        defaultText: "MIN의 생일을 축하합니다! 🎉",
+        captchaMain: "HAPPY MIN DAY 2026",
+        defaultText: "여기에 X에 공유할 한국어 문구를 입력하세요!",
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "이미지 다운로드",
-        btnX: "X에 공유하기",
+        btnShareX: "X에 공유하기",
         authorLabel: "제작자: ",
         dlTitle: "🎉 콜라주 완성!",
         dlDesc: "아래 이미지를 【길게 누른 후】 「사진에 저장」을 선택하세요:",
         btnNextQr: "서프라이즈 QR 코드 확인하기 👉",
         btnBackEditor: "← 계속 편집하기",
         qrTitle: "🎁 서프라이즈 QR 코드 획득!",
-        qrDesc: "HAPPY MINDAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
+        qrDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
         qrBack: "만들기 페이지로 돌아가기"
       },
       en: {
         captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MINDAY 2026",
-        stickerTitle: "Click to add sticker to image:",
-        lblText: "Tweet Content:",
-        lblTag: "Hashtags:",
-        defaultText: "Happy MIN Day! Wish MIN a wonderful birthday! 🎉",
+        captchaMain: "HAPPY MIN DAY 2026",
+        defaultText: "Enter your default English text for X here!",
         defaultHashtags: "HAPPY_MINDAY_2026,MIN",
         btnDownload: "Download Image",
-        btnX: "Share to X",
+        btnShareX: "Share to X",
         authorLabel: "Created by ",
         dlTitle: "🎉 Collage Complete!",
         dlDesc: "【Long press the image below】 and select 'Save Image':",
         btnNextQr: "Get Surprise QR Code 👉",
         btnBackEditor: "← Back to Edit",
         qrTitle: "🎁 Surprise QR Code Unlocked!",
-        qrDesc: "Thank you for joining HAPPY MINDAY 2026!<br>Scan the QR Code below to check out special content:",
+        qrDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Scan the QR Code below to check out special content:",
         qrBack: "Back to Editor"
       }
     };
@@ -708,15 +533,12 @@
       const data = i18n[lang];
       document.getElementById('t-captcha-sub').innerText = data.captchaSub;
       document.getElementById('t-captcha-main').innerText = data.captchaMain;
-      document.getElementById('t-sticker-title').innerText = data.stickerTitle;
-      document.getElementById('t-lbl-text').innerText = data.lblText;
-      document.getElementById('t-lbl-tag').innerText = data.lblTag;
-
-      document.getElementById('tweetContent').value = data.defaultText;
-      document.getElementById('tweetHashtags').value = data.defaultHashtags;
+      
+      currentTweetText = data.defaultText;
+      currentHashtags = data.defaultHashtags;
 
       document.getElementById('downloadBtn').innerText = data.btnDownload;
-      document.getElementById('shareXBtn').innerText = data.btnX;
+      document.getElementById('shareXBtn').innerText = data.btnShareX;
       document.getElementById('t-author-label').innerText = data.authorLabel;
 
       document.getElementById('t-dl-title').innerText = data.dlTitle;
@@ -731,7 +553,6 @@
 
     setLanguage('zh');
 
-    // 視圖切換邏輯
     function hideAllViews() {
       document.getElementById('mainView').style.display = 'none';
       document.getElementById('downloadView').style.display = 'none';
@@ -740,36 +561,39 @@
 
     function switchToMain() {
       hideAllViews();
-      document.getElementById('mainView').style.display = 'block';
+      document.getElementById('mainView').style.display = 'flex';
       window.scrollTo(0, 0);
     }
 
     function switchToDownload(imgBase64) {
       hideAllViews();
       document.getElementById('resultImage').src = imgBase64;
-      document.getElementById('downloadView').style.display = 'block';
+      document.getElementById('downloadView').style.display = 'flex';
       window.scrollTo(0, 0);
     }
 
     function switchToQrPage() {
       hideAllViews();
-      document.getElementById('qrView').style.display = 'block';
+      if (qrCodeList.length > 0) {
+        const randomIndex = Math.floor(Math.random() * qrCodeList.length);
+        document.getElementById('randomQrImg').src = qrCodeList[randomIndex];
+      }
+      document.getElementById('qrView').style.display = 'flex';
       window.scrollTo(0, 0);
     }
 
-    // 格子與相片互動
     const fileInput = document.getElementById('fileInput');
-    const items = document.querySelectorAll('.grid-item:not(.center-item)');
+    const items = document.querySelectorAll('.grid-item:not(.locked-block)');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const shareXBtn = document.getElementById('shareXBtn');
     let activeItem = null;
 
     items.forEach(item => {
-      // 刪除按鈕
       const delBtn = document.createElement('button');
       delBtn.className = 'delete-btn';
       delBtn.innerHTML = '✕';
       item.appendChild(delBtn);
 
-      // 縮放控制桿
       const zoomControl = document.createElement('div');
       zoomControl.className = 'zoom-control';
       zoomControl.innerHTML = `<input type="range" min="1" max="3" step="0.05" value="1">`;
@@ -795,16 +619,14 @@
         const wrapper = item.querySelector('.img-wrapper');
         if (wrapper) wrapper.remove();
         item.classList.remove('has-image', 'selected');
+        item.loadedImageObj = null;
         item.state = { scale: 1, x: 0, y: 0 };
         slider.value = 1;
       });
 
       item.addEventListener('click', (e) => {
         if (e.target === delBtn || e.target === slider) return;
-        
-        // 清除其他格子選取
         items.forEach(i => i.classList.remove('selected'));
-        deselectStickers();
 
         if (!item.classList.contains('has-image')) {
           activeItem = item;
@@ -814,7 +636,15 @@
         }
       });
 
-      // 拖曳照片邏輯
+      item.addEventListener('wheel', (e) => {
+        if (!item.classList.contains('has-image')) return;
+        e.preventDefault();
+        let delta = e.deltaY > 0 ? -0.1 : 0.1;
+        item.state.scale = Math.min(Math.max(1, item.state.scale + delta), 3);
+        slider.value = item.state.scale;
+        updateTransform();
+      }, { passive: false });
+
       let isDragging = false;
       let startX, startY;
 
@@ -852,6 +682,11 @@
         const reader = new FileReader();
         reader.onload = function(evt) {
           const imgUrl = evt.target.result;
+          const img = new Image();
+          img.src = imgUrl;
+          img.onload = () => {
+            activeItem.loadedImageObj = img;
+          };
 
           let wrapper = activeItem.querySelector('.img-wrapper');
           if (!wrapper) {
@@ -870,120 +705,240 @@
       fileInput.value = '';
     });
 
-    // 貼紙系統
-    const captchaCard = document.getElementById('captchaCard');
-
-    function deselectStickers() {
-      document.querySelectorAll('.placed-sticker').forEach(s => s.classList.remove('selected'));
-    }
-
-    function addSticker(src) {
-      const sticker = document.createElement('div');
-      sticker.className = 'placed-sticker selected';
-      sticker.style.left = '40%';
-      sticker.style.top = '40%';
-
-      const img = document.createElement('img');
-      img.src = src;
-      sticker.appendChild(img);
-      captchaCard.appendChild(sticker);
-
-      deselectStickers();
-      sticker.classList.add('selected');
-
-      // 貼紙拖曳
-      let isDragging = false;
-      let startX, startY, initialLeft, initialTop;
-
-      function onStart(e) {
-        e.stopPropagation();
-        deselectStickers();
-        items.forEach(i => i.classList.remove('selected'));
-        sticker.classList.add('selected');
-
-        isDragging = true;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        
-        initialLeft = sticker.offsetLeft;
-        initialTop = sticker.offsetTop;
-        startX = clientX;
-        startY = clientY;
-      }
-
-      function onMove(e) {
-        if (!isDragging) return;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        
-        const deltaX = clientX - startX;
-        const deltaY = clientY - startY;
-
-        sticker.style.left = `${initialLeft + deltaX}px`;
-        sticker.style.top = `${initialTop + deltaY}px`;
-      }
-
-      function onEnd() { isDragging = false; }
-
-      sticker.addEventListener('mousedown', onStart);
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onEnd);
-      sticker.addEventListener('touchstart', onStart, { passive: false });
-      document.addEventListener('touchmove', onMove, { passive: false });
-      document.addEventListener('touchend', onEnd);
-    }
-
-    // 全局點擊取消選擇
     document.addEventListener('click', (e) => {
-      if (!e.target.closest('.grid-item') && !e.target.closest('.placed-sticker') && !e.target.closest('.sticker-selector')) {
+      if (!e.target.closest('.grid-item')) {
         items.forEach(i => i.classList.remove('selected'));
-        deselectStickers();
       }
     });
 
-    // 核心繪製 Canvas 並截圖
-    async function renderCardToImage() {
-      // 隱藏編輯 UI
-      items.forEach(i => i.classList.remove('selected'));
-      deselectStickers();
+    /* 圓角矩形繪製輔助函式 */
+    function drawRoundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
 
-      const card = document.getElementById('captchaCard');
-      
-      const canvas = await html2canvas(card, {
-        scale: 3, // 提高解析度
-        useCORS: true,
-        backgroundColor: null
+      if (fillStyle) {
+        ctx.fillStyle = fillStyle;
+        ctx.fill();
+      }
+      if (strokeStyle) {
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = strokeWidth || 1;
+        ctx.stroke();
+      }
+    }
+
+    /* 讀取圖片 Promise，增加 crossOrigin 支援 */
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
       });
+    }
+
+    /* 全原生純 Canvas 4K 超高清渲染 */
+    async function generatePureCanvas() {
+      items.forEach(i => i.classList.remove('selected'));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 1344;
+      canvas.height = 1760;
+      const ctx = canvas.getContext('2d');
+
+      // 1. 卡片外框與背景
+      drawRoundRect(ctx, 24, 24, 1296, 1712, 32, '#FFFFFF', '#E0E0E0', 8);
+
+      // 2. 頂部橘色 Header 區塊
+      drawRoundRect(ctx, 72, 72, 1200, 260, 16, '#F8B62D');
+
+      // 3. Header 文字
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '500 44px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(document.getElementById('t-captcha-sub').innerText, 120, 150);
+
+      ctx.font = 'italic 900 84px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillText(document.getElementById('t-captcha-main').innerText, 120, 250);
+
+      // 4. 九宮格相片區 (1200x1200)
+      const startX = 72;
+      const startY = 372;
+      const itemSize = 388;
+      const gap = 18;
+
+      const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
+
+      // 載入指定的拍立得框與底層固定圖片
+      const overlayImgElement = document.getElementById('polaroidOverlayImg');
+      const centerPhotoEl = document.getElementById('centerFixedPhoto');
+      
+      let loadedOverlayImg = null;
+      let loadedCenterPhoto = null;
+
+      if (overlayImgElement && overlayImgElement.src) {
+        loadedOverlayImg = await loadImage(overlayImgElement.src);
+      }
+      
+      // 提取背景圖網址
+      if (centerPhotoEl) {
+        const bgUrlMatch = window.getComputedStyle(centerPhotoEl).backgroundImage.match(/url\(['"]?(.*?)['"]?\)/);
+        if (bgUrlMatch && bgUrlMatch[1]) {
+          loadedCenterPhoto = await loadImage(bgUrlMatch[1]);
+        }
+      }
+
+      for (let index = 0; index < allGridElements.length; index++) {
+        const item = allGridElements[index];
+        const row = Math.floor(index / 3);
+        const col = index % 3;
+        const ix = startX + col * (itemSize + gap);
+        const iy = startY + row * (itemSize + gap);
+        const isCenterBlock = item.classList.contains('locked-block');
+
+        // 背景
+        drawRoundRect(ctx, ix, iy, itemSize, itemSize, 0, isCenterBlock ? '#FFFFFF' : '#F2F2F2');
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(ix, iy, itemSize, itemSize);
+        ctx.clip();
+
+        if (isCenterBlock) {
+          // A. 中間格繪製你固定的底層圖片
+          if (loadedCenterPhoto) {
+            ctx.drawImage(loadedCenterPhoto, ix, iy, itemSize, itemSize);
+          }
+        } else if (item.loadedImageObj) {
+          // B. 其他格繪製使用者上傳的照片
+          const img = item.loadedImageObj;
+          const scale = item.state.scale || 1;
+          const offsetX = (item.state.x || 0) * (itemSize / 100);
+          const offsetY = (item.state.y || 0) * (itemSize / 100);
+
+          const imgRatio = img.width / img.height;
+          let drawW = itemSize;
+          let drawH = itemSize;
+          if (imgRatio > 1) {
+            drawW = itemSize * imgRatio;
+          } else {
+            drawH = itemSize / imgRatio;
+          }
+
+          const basePosX = ix + (itemSize - drawW) / 2;
+          const basePosY = iy + (itemSize - drawH) / 2;
+          const centerX = ix + itemSize / 2;
+          const centerY = iy + itemSize / 2;
+
+          ctx.translate(centerX + offsetX, centerY + offsetY);
+          ctx.scale(scale, scale);
+          ctx.drawImage(img, basePosX - centerX, basePosY - centerY, drawW, drawH);
+        } else {
+          ctx.fillStyle = '#BBBBBB';
+          ctx.font = '300 140px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('+', ix + itemSize / 2, iy + itemSize / 2);
+        }
+        ctx.restore();
+
+        // C. 中間格：在底圖上層疊加繪製拍立得框（帶有浮起效果）
+        if (isCenterBlock && loadedOverlayImg) {
+          ctx.save();
+          ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+          ctx.shadowBlur = 14;
+          ctx.shadowOffsetY = 6;
+          
+          const frameW = itemSize * 1.04;
+          const frameH = itemSize * 1.04;
+          const frameX = ix - (frameW - itemSize) / 2;
+          const frameY = iy - (frameH - itemSize) / 2 + 10;
+
+          ctx.drawImage(loadedOverlayImg, frameX, frameY, frameW, frameH);
+          ctx.restore();
+        }
+      }
+
+      // 5. 底部圖示與按鈕區塊
+      const footerY = 1630;
+
+      function drawPath(pathStr, strokeColor, lineWidth = 8) {
+        const p = new Path2D(pathStr);
+        ctx.save();
+        ctx.strokeStyle = strokeColor;
+        ctx.lineWidth = lineWidth;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke(p);
+        ctx.restore();
+      }
+
+      // 完美的正方形向量愛心
+      ctx.save(); ctx.translate(75, footerY - 30); ctx.scale(2.8, 2.8);
+      drawPath("M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z", "#222222", 2.2);
+      ctx.restore();
+
+      // 留言
+      ctx.save(); ctx.translate(165, footerY - 30); ctx.scale(2.8, 2.8);
+      drawPath("M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z", "#222222", 2.2);
+      ctx.restore();
+
+      // 分享
+      ctx.save(); ctx.translate(255, footerY - 30); ctx.scale(2.8, 2.8);
+      drawPath("M22 2L11 13M22 2l-7 20-4-9-9-4 22-9z", "#222222", 2.2);
+      ctx.restore();
+
+      // 書籤
+      ctx.save(); ctx.translate(345, footerY - 30); ctx.scale(2.8, 2.8);
+      drawPath("M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z", "#222222", 2.2);
+      ctx.restore();
+
+      // DONE 按鈕
+      drawRoundRect(ctx, 1020, footerY - 35, 250, 90, 16, '#F8B62D');
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'italic 900 48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('DONE', 1145, footerY + 12);
 
       return canvas.toDataURL('image/png');
     }
 
-    // 下載按鈕事件
-    document.getElementById('downloadBtn').addEventListener('click', async () => {
+    downloadBtn.addEventListener('click', async () => {
       try {
-        const imgData = await renderCardToImage();
-        switchToDownload(imgData);
-      } catch (err) {
-        alert("圖片生成失敗，請稍後再試！");
-        console.error(err);
+        const imgBase64 = await generatePureCanvas();
+        switchToDownload(imgBase64);
+      } catch (e) {
+        console.error("生成圖片失敗", e);
       }
     });
 
-    // 發送到 X 按鈕事件
-    document.getElementById('shareXBtn').addEventListener('click', async () => {
-      const content = document.getElementById('tweetContent').value;
-      const hashtags = document.getElementById('tweetHashtags').value;
-
-      const intentUrl = `https://x.com/intent/tweet?text=${encodeURIComponent(content)}&hashtags=${encodeURIComponent(hashtags)}`;
-      window.open(intentUrl, '_blank');
+    shareXBtn.addEventListener('click', async () => {
+      const tweetText = encodeURIComponent(currentTweetText);
+      const hashtags = encodeURIComponent(currentHashtags);
+      const xUrl = `https://x.com/intent/tweet?text=${tweetText}&hashtags=${hashtags}`;
+      window.open(xUrl, '_blank');
 
       try {
-        const imgData = await renderCardToImage();
-        switchToDownload(imgData);
-      } catch (err) {
-        console.error(err);
+        const imgBase64 = await generatePureCanvas();
+        switchToDownload(imgBase64);
+      } catch (e) {
+        console.error("生成圖片失敗", e);
       }
     });
   </script>
 </body>
 </html>
+
+```
