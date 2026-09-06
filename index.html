@@ -305,36 +305,28 @@
     }
   }
 
-  /* 透過 CORS 代理載入外部圖片，避免 Canvas 污染 */
-  async function loadImage(src, useProxy = true) {
-    if (!src) return null;
-    try {
-      let finalSrc = src;
-      let objectUrl = null;
-
-      if (useProxy && src.startsWith('http')) {
-        const proxyUrl = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(src);
-        const res = await fetch(proxyUrl);
-        if (res.ok) {
-          const blob = await res.blob();
-          objectUrl = URL.createObjectURL(blob);
-          finalSrc = objectUrl;
-        }
-      }
-
+  /* 安全的圖片載入函式（支援 CORS 與防卡死 Timeout） */
+  function loadCorsImage(src) {
+    return new Promise((resolve) => {
+      if (!src) return resolve(null);
       const img = new Image();
-      await new Promise((resolve, reject) => {
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = finalSrc;
-      });
+      img.crossOrigin = 'anonymous'; // 關鍵：防止 Canvas 被污染
+      
+      // 設定 3 秒超時，超時直接跳過，絕不卡死
+      const timer = setTimeout(() => {
+        resolve(null);
+      }, 3000);
 
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-      return img;
-    } catch (e) {
-      console.error('圖片載入失敗:', src, e);
-      return null;
-    }
+      img.onload = () => {
+        clearTimeout(timer);
+        resolve(img);
+      };
+      img.onerror = () => {
+        clearTimeout(timer);
+        resolve(null);
+      };
+      img.src = src;
+    });
   }
 
   /* 全原生純 Canvas 渲染 */
@@ -369,9 +361,15 @@
 
     const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
 
-    // 預先載入中間固定圖片
-    const CENTER_PHOTO_URL = 'https://i.urusai.cc/GzUNv.jpg';
-    const loadedCenterPhoto = await loadImage(CENTER_PHOTO_URL, true);
+    // 優先從頁面現有的 img 標籤抓，沒有的話再發請求
+    const overlayImg = document.getElementById('polaroidOverlayImg');
+    let loadedCenterPhoto = null;
+
+    if (overlayImg && overlayImg.complete && overlayImg.naturalWidth > 0) {
+      loadedCenterPhoto = overlayImg;
+    } else {
+      loadedCenterPhoto = await loadCorsImage('https://i.urusai.cc/GzUNv.jpg');
+    }
 
     for (let index = 0; index < allGridElements.length; index++) {
       const item = allGridElements[index];
@@ -390,7 +388,14 @@
 
       if (isCenterBlock) {
         if (loadedCenterPhoto) {
-          ctx.drawImage(loadedCenterPhoto, ix, iy, itemSize, itemSize);
+          try {
+            ctx.drawImage(loadedCenterPhoto, ix, iy, itemSize, itemSize);
+          } catch(e) {
+            console.warn("中間圖片渲染受限，啟用備用樣式", e);
+            drawFallbackCenter(ctx, ix, iy, itemSize);
+          }
+        } else {
+          drawFallbackCenter(ctx, ix, iy, itemSize);
         }
       } else if (item.loadedImageObj) {
         const img = item.loadedImageObj;
@@ -465,12 +470,27 @@
     return canvas.toDataURL('image/png');
   }
 
+  function drawFallbackCenter(ctx, x, y, size) {
+    ctx.fillStyle = '#F8B62D';
+    ctx.fillRect(x, y, size, size);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 36px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('HAPPY MIN DAY', x + size / 2, y + size / 2);
+  }
+
   downloadBtn.addEventListener('click', async () => {
     try {
+      downloadBtn.innerText = "生成中...";
       const imgBase64 = await generatePureCanvas();
       switchToDownload(imgBase64);
     } catch (e) {
       console.error("生成圖片失敗", e);
+      alert("生成圖片失敗，請檢查圖片格式後重試！");
+    } finally {
+      const lang = document.querySelector('.lang-btn.active') ? document.querySelector('.lang-btn.active').getAttribute('onclick').match(/'(.*?)'/)[1] : 'zh';
+      downloadBtn.innerText = i18n[lang].btnDownload;
     }
   });
 
