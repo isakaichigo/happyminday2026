@@ -157,7 +157,7 @@
       z-index: 1;
     }
 
-    /* 上層蓋住的拍立得框 PNG（修改2：上移10%，-42% 改為 -52%） */
+    /* 上層蓋住的拍立得框 PNG（上移10%） */
     .polaroid-frame-overlay {
       position: absolute;
       top: 50%;
@@ -348,7 +348,7 @@
       margin-top: 10px;
     }
 
-    /* 修改 3：三個 QR Code 容器 */
+    /* 三個 QR Code 容器 */
     .qr-container-triple {
       display: flex;
       justify-content: space-around;
@@ -426,7 +426,7 @@
           
           <div class="grid-item locked-block" id="centerGridItem">
             <div class="center-user-photo" id="centerFixedPhoto"></div>
-            <img src="https://i.urusai.cc/GzUNv.jpg" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
+            <img src="https://i.urusai.cc/GzUNv.jpg" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg" crossorigin="anonymous">
           </div>
           
           <div class="grid-item"></div>
@@ -466,7 +466,6 @@
       </div>
     </div>
 
-    <!-- 修改 3：同時展示 台灣 / 韓國 / 日本 專屬連結與上傳功能 -->
     <div id="qrView" class="result-view">
       <div class="result-card">
         <div class="result-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
@@ -511,7 +510,6 @@
     let currentTweetText = "";
     let currentHashtags = "";
 
-    // 修改 1：預設 Hashtags 改為指定標籤
     const defaultHashtagList = "HiFiUnicorn,ホミン,허민,happyminday,HEOMIN,HAPPY_MINDAY_2026,みんなのビタミン";
 
     const i18n = {
@@ -635,7 +633,6 @@
       window.scrollTo(0, 0);
     }
 
-    /* 修改 3：管理 QR 圖片與網址上傳機制 */
     function triggerQrUpload(country) {
       document.getElementById(`qrFileInput${country}`).click();
     }
@@ -791,7 +788,6 @@
       }
     });
 
-    /* 圓角矩形繪製輔助函式 */
     function drawRoundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
@@ -816,14 +812,20 @@
       }
     }
 
-    /* 讀取圖片 Promise */
+    /* 改良版圖片載入函式（支援 CORS 防跨域阻擋與 Data URL 轉換） */
     function loadImage(src) {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
-        img.onerror = () => resolve(null);
+        img.onerror = () => {
+          // 如果匿名載入失敗，嘗試一般載入
+          const fallbackImg = new Image();
+          fallbackImg.onload = () => resolve(fallbackImg);
+          fallbackImg.onerror = () => resolve(null);
+          fallbackImg.src = src;
+        };
         img.src = src;
       });
     }
@@ -860,22 +862,10 @@
 
       const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
 
-      const overlayImgElement = document.getElementById('polaroidOverlayImg');
-      const centerPhotoEl = document.getElementById('centerFixedPhoto');
-      
-      let loadedOverlayImg = null;
-      let loadedCenterPhoto = null;
-
-      if (overlayImgElement && overlayImgElement.src) {
-        loadedOverlayImg = await loadImage(overlayImgElement.src);
-      }
-      
-      if (centerPhotoEl) {
-        const bgUrlMatch = window.getComputedStyle(centerPhotoEl).backgroundImage.match(/url\(['"]?(.*?)['"]?\)/);
-        if (bgUrlMatch && bgUrlMatch[1]) {
-          loadedCenterPhoto = await loadImage(bgUrlMatch[1]);
-        }
-      }
+      // 確保中間圖片與外框能正確載入
+      const centerPhotoUrl = 'https://i.urusai.cc/GzUNv.jpg';
+      const loadedOverlayImg = await loadImage(centerPhotoUrl);
+      const loadedCenterPhoto = await loadImage(centerPhotoUrl);
 
       for (let index = 0; index < allGridElements.length; index++) {
         const item = allGridElements[index];
@@ -928,7 +918,7 @@
         }
         ctx.restore();
 
-        // 中間格繪製（上移 10% 效果在 Canvas 上進行相應偏移調整）
+        // 中間格拍立得外框繪製（上移 10%）
         if (isCenterBlock && loadedOverlayImg) {
           ctx.save();
           ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
@@ -938,7 +928,7 @@
           const frameW = itemSize * 1.04;
           const frameH = itemSize * 1.04;
           const frameX = ix - (frameW - itemSize) / 2;
-          const frameY = iy - (frameH - itemSize) / 2 - 30; // Canvas 上移相應距離
+          const frameY = iy - (frameH - itemSize) / 2 - 30; // 向上偏移
 
           ctx.drawImage(loadedOverlayImg, frameX, frameY, frameW, frameH);
           ctx.restore();
