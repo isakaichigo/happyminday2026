@@ -157,7 +157,7 @@
       z-index: 1;
     }
 
-    /* 上層蓋住的拍立得框 PNG（上移10%） */
+    /* 上層蓋住的拍立得框 PNG */
     .polaroid-frame-overlay {
       position: absolute;
       top: 50%;
@@ -168,6 +168,7 @@
       pointer-events: none;
       z-index: 5;
       filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
+      object-fit: contain;
     }
 
     /* 圖片包裹與拉桿 */
@@ -426,7 +427,7 @@
           
           <div class="grid-item locked-block" id="centerGridItem">
             <div class="center-user-photo" id="centerFixedPhoto"></div>
-            <img src="https://i.urusai.cc/GzUNv.jpg" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg" crossorigin="anonymous">
+            <img src="https://i.urusai.cc/GzUNv.jpg" alt="" class="polaroid-frame-overlay" id="polaroidOverlayImg" crossorigin="anonymous">
           </div>
           
           <div class="grid-item"></div>
@@ -459,7 +460,7 @@
         <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
         <div class="result-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
         
-        <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
+        <img id="resultImage" class="result-img-preview" src="" alt="">
 
         <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
         <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
@@ -475,21 +476,21 @@
           <!-- 台灣 -->
           <div class="qr-block">
             <div class="qr-country-label">🇹🇼 台灣</div>
-            <img id="qrImgTW" class="qr-img" src="https://via.placeholder.com/150?text=Upload+TW" alt="台灣 QR Code" onclick="triggerQrUpload('TW')">
+            <img id="qrImgTW" class="qr-img" src="https://via.placeholder.com/150?text=Upload+TW" alt="" onclick="triggerQrUpload('TW')">
             <a id="qrLinkTW" class="qr-link" href="#" target="_blank">點此開啟連結</a>
           </div>
 
           <!-- 韓國 -->
           <div class="qr-block">
             <div class="qr-country-label">🇰🇷 韓國</div>
-            <img id="qrImgKR" class="qr-img" src="https://via.placeholder.com/150?text=Upload+KR" alt="韓國 QR Code" onclick="triggerQrUpload('KR')">
+            <img id="qrImgKR" class="qr-img" src="https://via.placeholder.com/150?text=Upload+KR" alt="" onclick="triggerQrUpload('KR')">
             <a id="qrLinkKR" class="qr-link" href="#" target="_blank">點此開啟連結</a>
           </div>
 
           <!-- 日本 -->
           <div class="qr-block">
             <div class="qr-country-label">🇯🇵 日本</div>
-            <img id="qrImgJP" class="qr-img" src="https://via.placeholder.com/150?text=Upload+JP" alt="日本 QR Code" onclick="triggerQrUpload('JP')">
+            <img id="qrImgJP" class="qr-img" src="https://via.placeholder.com/150?text=Upload+JP" alt="" onclick="triggerQrUpload('JP')">
             <a id="qrLinkJP" class="qr-link" href="#" target="_blank">點此開啟連結</a>
           </div>
         </div>
@@ -812,25 +813,17 @@
       }
     }
 
-    /* 改良版圖片載入函式（支援 CORS 防跨域阻擋與 Data URL 轉換） */
     function loadImage(src) {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
-        img.onerror = () => {
-          // 如果匿名載入失敗，嘗試一般載入
-          const fallbackImg = new Image();
-          fallbackImg.onload = () => resolve(fallbackImg);
-          fallbackImg.onerror = () => resolve(null);
-          fallbackImg.src = src;
-        };
+        img.onerror = () => resolve(null);
         img.src = src;
       });
     }
 
-    /* 全原生純 Canvas 渲染 */
     async function generatePureCanvas() {
       items.forEach(i => i.classList.remove('selected'));
 
@@ -862,7 +855,6 @@
 
       const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
 
-      // 確保中間圖片與外框能正確載入
       const centerPhotoUrl = 'https://i.urusai.cc/GzUNv.jpg';
       const loadedOverlayImg = await loadImage(centerPhotoUrl);
       const loadedCenterPhoto = await loadImage(centerPhotoUrl);
@@ -918,7 +910,6 @@
         }
         ctx.restore();
 
-        // 中間格拍立得外框繪製（上移 10%）
         if (isCenterBlock && loadedOverlayImg) {
           ctx.save();
           ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
@@ -928,7 +919,7 @@
           const frameW = itemSize * 1.04;
           const frameH = itemSize * 1.04;
           const frameX = ix - (frameW - itemSize) / 2;
-          const frameY = iy - (frameH - itemSize) / 2 - 30; // 向上偏移
+          const frameY = iy - (frameH - itemSize) / 2 - 30;
 
           ctx.drawImage(loadedOverlayImg, frameX, frameY, frameW, frameH);
           ctx.restore();
