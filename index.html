@@ -2,126 +2,126 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HAPPY MIN DAY 2026 - Photo Collage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HAPPY MINDAY 2026</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       user-select: none;
-      -webkit-user-select: none;
     }
-
     body {
-      background-color: #f5f5f7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-      color: #333;
+      padding: 20px 10px;
+      background-color: #f5f5f5;
     }
 
-    .view-container {
+    /* 多語言切換區 */
+    .lang-switch {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      align-self: flex-end;
+      max-width: 360px;
       width: 100%;
-      max-width: 480px;
+      justify-content: flex-end;
+    }
+    .lang-btn {
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: #fed32c;
+      color: #000;
+      border-color: #fed32c;
+      font-weight: bold;
+    }
+
+    /* 視圖切換容器 */
+    .view-panel {
+      width: 100%;
+      max-width: 360px;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* 多語言切換按鈕 */
-    .lang-switch {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
+    /* === CAPTCHA 風格主外框卡片 === */
+    .captcha-card {
       width: 100%;
-      justify-content: center;
-    }
-
-    .lang-btn {
-      background-color: #ffffff;
-      border: 1px solid #e0e0e0;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #666;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .lang-btn.active {
-      background-color: #F8B62D;
-      color: #ffffff;
-      border-color: #F8B62D;
-    }
-
-    /* 主卡片容器 */
-    .card-container {
-      background-color: #ffffff;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      background: #ffffff;
       border: 2px solid #e0e0e0;
-      width: 100%;
-    }
-
-    /* 頂部橘色區塊 */
-    .captcha-header {
-      background-color: #F8B62D;
       border-radius: 8px;
-      padding: 16px 20px;
-      color: #ffffff;
-      margin-bottom: 16px;
+      padding: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      margin-bottom: 15px;
+      position: relative;
     }
 
-    .captcha-sub {
-      font-size: 14px;
-      font-weight: 500;
-      opacity: 0.9;
-      margin-bottom: 4px;
+    /* 頂部黃色標題區 */
+    .captcha-header {
+      background-color: #fed32c;
+      padding: 14px 16px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      color: #000000;
+      font-family: "Courier New", Courier, monospace, sans-serif;
+    }
+    .captcha-header .sub-title {
+      font-size: 13px;
+      font-weight: bold;
       letter-spacing: 0.5px;
+      display: block;
+      margin-bottom: 2px;
     }
-
-    .captcha-main {
+    .captcha-header .main-title {
       font-size: 26px;
       font-weight: 900;
       font-style: italic;
+      line-height: 1.1;
       letter-spacing: 0.5px;
     }
 
-    /* 九宮格容器 */
+    /* 中間 3x3 九宮格 */
     .grid-container {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(3, 1fr); 
+      grid-template-rows: repeat(3, 1fr); 
+      gap: 3px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
       background-color: #ffffff;
-      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 12px;
     }
 
+    /* 格子基本樣式 */
     .grid-item {
-      aspect-ratio: 1 / 1;
+      width: 100%;
+      height: 100%;
       background-color: #f2f2f2;
+      position: relative;
+      cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
-      position: relative;
       overflow: hidden;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
     }
 
-    .grid-item:hover {
-      background-color: #e8e8e8;
-    }
-
-    /* 預設加號標誌（排除中間固定格） */
-    .grid-item:not(.locked-block)::before {
-      content: '+';
-      font-size: 36px;
+    .grid-item::before {
+      content: "+";
+      font-size: 32px;
       color: #bbb;
       font-weight: 300;
     }
@@ -130,286 +130,363 @@
       display: none;
     }
 
-    .grid-item.selected {
-      outline: 3px solid #F8B62D;
-      outline-offset: -3px;
-      z-index: 2;
-    }
-
-    /* 中間固定浮起格 */
-    .grid-item.locked-block {
-      overflow: visible !important;
-      background-color: transparent;
-      cursor: default !important;
-      z-index: 3;
-    }
-
-    .grid-item.locked-block:hover {
-      background-color: transparent;
-    }
-
-    /* 中間 Panton 色卡固定圖片 */
-    .center-pantone-card {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(1.06);
-      width: 100%;
-      height: auto;
-      pointer-events: none;
-      z-index: 5;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-      border-radius: 4px;
-      background-color: #ffffff;
-    }
-
-    /* 圖片包裹與拉桿 */
+    /* 上傳照片容器 */
     .img-wrapper {
+      width: 100%;
+      height: 100%;
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       transform-origin: center center;
+      touch-action: none;
     }
 
+    .img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* 格子刪除按鈕 */
     .delete-btn {
+      display: none;
       position: absolute;
       top: 4px;
       right: 4px;
       background: rgba(0, 0, 0, 0.6);
-      color: white;
+      color: #fff;
       border: none;
       border-radius: 50%;
       width: 22px;
       height: 22px;
-      font-size: 12px;
-      display: none;
-      justify-content: center;
-      align-items: center;
+      font-size: 14px;
+      line-height: 22px;
+      text-align: center;
       cursor: pointer;
       z-index: 10;
     }
 
-    .grid-item:not(.locked-block).has-image:hover .delete-btn,
-    .grid-item:not(.locked-block).selected .delete-btn {
-      display: flex;
+    .grid-item.has-image .delete-btn {
+      display: block;
     }
 
+    /* 格子照片縮放控制條 */
     .zoom-control {
+      display: none;
       position: absolute;
       bottom: 4px;
       left: 50%;
       transform: translateX(-50%);
       width: 80%;
-      background: rgba(255, 255, 255, 0.9);
+      z-index: 10;
+      background: rgba(255,255,255,0.9);
       padding: 2px 6px;
       border-radius: 10px;
-      display: none;
-      z-index: 10;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     }
 
-    .grid-item:not(.locked-block).selected .zoom-control {
+    .grid-item.selected .zoom-control {
       display: flex;
+      align-items: center;
     }
 
     .zoom-control input {
       width: 100%;
-      accent-color: #F8B62D;
+      cursor: pointer;
     }
 
-    /* 底部社群列 */
-    .card-footer {
+    /* 中間固定正方形格 (第5格) */
+    .grid-item.center-item {
+      background-color: #ff4757;
+      cursor: default;
+    }
+    .grid-item.center-item::before {
+      display: none;
+    }
+
+    /* 底部社群互動欄 */
+    .captcha-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 4px 4px 0 4px;
+      padding: 4px 2px 0 2px;
     }
 
-    .footer-icons {
+    .social-icons {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       align-items: center;
     }
 
-    .footer-icons svg {
-      width: 22px;
-      height: 22px;
+    .social-icons svg {
+      width: 20px;
+      height: 20px;
       fill: none;
       stroke: #222;
-      stroke-width: 2.2;
+      stroke-width: 2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
 
-    .done-btn {
-      background-color: #F8B62D;
-      color: #ffffff;
+    .tag-btn {
+      background-color: #fed32c;
+      color: #000;
       font-weight: 900;
       font-style: italic;
-      font-size: 18px;
-      padding: 8px 24px;
-      border-radius: 6px;
+      font-family: "Courier New", Courier, monospace, sans-serif;
+      padding: 6px 16px;
+      border-radius: 4px;
+      font-size: 14px;
       letter-spacing: 0.5px;
     }
 
-    /* 操作按鈕區 */
-    .action-buttons {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-      margin-top: 16px;
+    /* 可拖曳貼紙 */
+    .placed-sticker {
+      position: absolute;
+      cursor: move;
+      z-index: 20;
+      transform-origin: center center;
+      touch-action: none;
+      display: inline-block;
     }
 
-    .btn {
-      flex: 1;
-      padding: 14px;
-      border: none;
+    .placed-sticker img {
+      width: 55px;
+      height: auto;
+      display: block;
+      pointer-events: none;
+    }
+
+    .placed-sticker.selected {
+      outline: 1.5px dashed #000;
+      border-radius: 4px;
+    }
+
+    /* 貼紙選擇區 */
+    .sticker-selector {
+      width: 100%;
+      background: #fff;
+      padding: 12px;
       border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: transform 0.1s ease, opacity 0.2s ease;
-      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 15px;
     }
 
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-download {
-      background-color: #F8B62D;
-      color: #ffffff;
-    }
-
-    .btn-share {
-      background-color: #000000;
-      color: #ffffff;
-    }
-
-    .author-tag {
-      margin-top: 12px;
+    .sticker-title {
       font-size: 12px;
-      color: #888;
-      text-align: center;
-    }
-
-    /* 完成與 QR Code 頁面樣式 */
-    .result-view {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-    }
-
-    .result-card {
-      background: #ffffff;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-      width: 100%;
-      text-align: center;
-    }
-
-    .result-title {
-      font-size: 20px;
-      font-weight: 800;
-      color: #222;
+      font-weight: bold;
+      color: #666;
       margin-bottom: 8px;
     }
 
-    .result-desc {
-      font-size: 13.5px;
+    .sticker-list {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+      align-items: center;
+    }
+
+    .sticker-option {
+      width: 44px;
+      height: 44px;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s;
+    }
+
+    .sticker-option:active {
+      transform: scale(0.9);
+    }
+
+    .sticker-option img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* 輸入區塊 */
+    .form-container {
+      width: 100%;
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-group label {
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group textarea {
+      padding: 8px 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 55px;
+    }
+
+    /* 按鈕區 */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 15px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 12px 10px;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: transform 0.1s;
+      text-align: center;
+    }
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+    
+    .btn-download {
+      background-color: #2ed573;
+    }
+    .btn-x {
+      background-color: #000000;
+    }
+
+    /* 頁尾帳號標示區 */
+    .footer-author {
+      font-size: 12px;
+      color: #777;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .footer-author a {
+      color: #333;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* 下載圖片預覽頁面 View */
+    #downloadView {
+      display: none;
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .dl-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2ed573;
+      margin-bottom: 6px;
+    }
+
+    .dl-desc {
+      font-size: 13px;
       color: #666;
-      margin-bottom: 16px;
+      margin-bottom: 15px;
+    }
+
+    .result-img-container {
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .result-img-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    .btn-next-qr {
+      background: #fed32c;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
+      box-shadow: 0 4px 10px rgba(254,211,44,0.4);
+    }
+
+    .btn-back-editor {
+      background: #eee;
+      color: #333;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* 全螢幕 QR 跳轉頁面 View */
+    #qrView {
+      display: none;
+      text-align: center;
+      background: #fff;
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .qr-page-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ff4757;
+      margin-bottom: 10px;
+    }
+
+    .qr-page-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 20px;
       line-height: 1.5;
     }
 
-    .result-img-preview {
-      width: 100%;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-
-    .btn-secondary {
-      background-color: #f2f2f7;
-      color: #333;
-      margin-top: 10px;
-    }
-
-    .qr-img {
+    .qr-page-img {
       width: 220px;
-      height: 220px;
-      margin: 10px auto 20px auto;
-      border-radius: 12px;
-      display: block;
-      border: 1px solid #eee;
-    }
-
-    #fileInput {
-      display: none;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="view-container">
-
-    <div class="lang-switch">
-      <button class="lang-btn active" onclick="setLanguage('zh', event)">繁體中文</button>
-      <button class="lang-btn" onclick="setLanguage('ja', event)">日本語</button>
-      <button class="lang-btn" onclick="setLanguage('ko', event)">한국어</button>
-      <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
-    </div>
-
-    <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-      <div class="card-container" id="collageCard">
-        <div class="captcha-header">
-          <div class="captcha-sub" id="t-captcha-sub">select all images with MIN's color</div>
-          <div class="captcha-main" id="t-captcha-main">HAPPY MIN DAY 2026</div>
-        </div>
-
-        <div class="grid-container" id="grid">
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          
-          <!-- 中間固定色卡格（此處置入你的色卡圖片網址） -->
-          <div class="grid-item locked-block" id="centerGridItem">
-            <!-- 👇 替換 src 為你的 HEO MIN Pantone 色卡圖網址 -->
-            <img src="https://i.ibb.co/JjWSpqmY/minminmin-02.jpg" alt="HEO MIN Card" class="center-pantone-card" id="centerPantoneImg">
-          </div>
-          
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-        </div>
-
-        <div class="card-footer">
-          <div class="footer-icons">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-          </div>
-          <div class="done-btn">DONE</div>
-        </div>
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn btn-download" id="downloadBtn">下載圖片</button>
-        <button class="btn btn-share" id="shareXBtn">發送到 X</button>
-      </div>
-
-      <div class="author-tag"><span id="t-author-label">製作者：</span>@isakaichigo</div>
-    </div>
-
-    <div id="downloadView" class="result-view">
-      <div class="result-card">
-        <div class="result-title
+      he
