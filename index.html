@@ -118,7 +118,7 @@
       background-color: #e8e8e8;
     }
 
-    /* 預設加號標誌（排除鎖定的中間格） */
+    /* 預設加號標誌（排除中間固定格） */
     .grid-item:not(.locked-block)::before {
       content: '+';
       font-size: 36px;
@@ -144,31 +144,23 @@
       z-index: 3;
     }
 
-    /* 中間你寫死的固定圖片 */
-    .center-user-photo {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      /* 👇 在這裡放入你想寫死的中間圖片網址 */
-      background-image: url('YOUR_IMAGE_URL.jpg'); 
-      z-index: 1;
+    .grid-item.locked-block:hover {
+      background-color: transparent;
     }
 
-    /* 上層蓋住的拍立得框 PNG */
-    .polaroid-frame-overlay {
+    /* 中間 Panton 色卡固定圖片 */
+    .center-pantone-card {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -42%) scale(1.05);
-      width: 104%;
+      transform: translate(-50%, -50%) scale(1.06);
+      width: 100%;
       height: auto;
       pointer-events: none;
       z-index: 5;
-      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+      border-radius: 4px;
+      background-color: #ffffff;
     }
 
     /* 圖片包裹與拉桿 */
@@ -387,9 +379,10 @@
           <div class="grid-item"></div>
           <div class="grid-item"></div>
           
+          <!-- 中間固定色卡格（此處置入你的色卡圖片網址） -->
           <div class="grid-item locked-block" id="centerGridItem">
-            <div class="center-user-photo" id="centerFixedPhoto"></div>
-            <img src="https://i.ibb.co/JjWSpqmY/minminmin-02.jpg" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
+            <!-- 👇 替換 src 為你的 HEO MIN Pantone 色卡圖網址 -->
+            <img src="https://i.ibb.co/JjWSpqmY/minminmin-02.jpg" alt="HEO MIN Card" class="center-pantone-card" id="centerPantoneImg">
           </div>
           
           <div class="grid-item"></div>
@@ -414,4 +407,9 @@
         <button class="btn btn-share" id="shareXBtn">發送到 X</button>
       </div>
 
-      <div class="author-tag"><span id="t-au
+      <div class="author-tag"><span id="t-author-label">製作者：</span>@isakaichigo</div>
+    </div>
+
+    <div id="downloadView" class="result-view">
+      <div class="result-card">
+        <div class="result-title
