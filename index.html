@@ -304,7 +304,7 @@
       text-align: center;
     }
 
-    /* 完成與 QR Code 頁面樣式 */
+    /* 完成與列印碼頁面樣式 */
     .result-view {
       display: none;
       flex-direction: column;
@@ -348,54 +348,42 @@
       margin-top: 10px;
     }
 
-    /* 三個 QR Code 容器 */
-    .qr-container-triple {
+    /* 三國列印碼容器 */
+    .code-container-triple {
       display: flex;
-      justify-content: space-around;
-      align-items: flex-start;
-      gap: 8px;
+      flex-direction: column;
+      gap: 12px;
       margin: 16px 0;
     }
 
-    .qr-block {
-      flex: 1;
+    .code-block {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
       background: #fafafa;
-      padding: 8px;
-      border-radius: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
       border: 1px solid #eee;
     }
 
-    .qr-country-label {
-      font-size: 13px;
+    .code-label {
+      font-size: 14px;
       font-weight: 700;
       color: #333;
-      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .qr-img {
-      width: 100%;
-      max-width: 110px;
-      aspect-ratio: 1 / 1;
-      object-fit: contain;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    .qr-link {
-      margin-top: 6px;
-      font-size: 11px;
+    .code-val {
+      font-size: 15px;
+      font-weight: 800;
       color: #F8B62D;
-      text-decoration: underline;
-      word-break: break-all;
+      font-family: monospace, monospace;
+      letter-spacing: 0.5px;
     }
 
-    /* 隱藏檔案輸入 */
-    #fileInput, .qr-file-input {
+    #fileInput {
       display: none;
     }
   </style>
@@ -461,50 +449,43 @@
         
         <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
 
-        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
+        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToCodePage()">查看超商列印代碼 👉</button>
         <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
       </div>
     </div>
 
-    <div id="qrView" class="result-view">
+    <div id="codeView" class="result-view">
       <div class="result-card">
-        <div class="result-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
-        <div class="result-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 或點擊連結獲取專屬內容：</div>
+        <div class="result-title" id="t-code-title">🖨️ 超商列印代碼</div>
+        <div class="result-desc" id="t-code-desc">感謝參與 HAPPY MIN DAY 2026！<br>至各國超商列印機台輸入代碼即可列印：</div>
 
-        <div class="qr-container-triple">
+        <div class="code-container-triple">
           <!-- 台灣 -->
-          <div class="qr-block">
-            <div class="qr-country-label">🇹🇼 台灣</div>
-            <img id="qrImgTW" class="qr-img" src="https://via.placeholder.com/150?text=Upload+TW" alt="台灣 QR Code" onclick="triggerQrUpload('TW')">
-            <a id="qrLinkTW" class="qr-link" href="#" target="_blank">點此開啟連結</a>
+          <div class="code-block">
+            <div class="code-label">🇹🇼 台灣 (ibon)</div>
+            <div class="code-val">2494045387</div>
           </div>
 
           <!-- 韓國 -->
-          <div class="qr-block">
-            <div class="qr-country-label">🇰🇷 韓國</div>
-            <img id="qrImgKR" class="qr-img" src="https://via.placeholder.com/150?text=Upload+KR" alt="韓國 QR Code" onclick="triggerQrUpload('KR')">
-            <a id="qrLinkKR" class="qr-link" href="#" target="_blank">點此開啟連結</a>
+          <div class="code-block">
+            <div class="code-label">🇰🇷 韓國 (printingbox)</div>
+            <div class="code-val">7563692</div>
           </div>
 
           <!-- 日本 -->
-          <div class="qr-block">
-            <div class="qr-country-label">🇯🇵 日本</div>
-            <img id="qrImgJP" class="qr-img" src="https://via.placeholder.com/150?text=Upload+JP" alt="日本 QR Code" onclick="triggerQrUpload('JP')">
-            <a id="qrLinkJP" class="qr-link" href="#" target="_blank">點此開啟連結</a>
+          <div class="code-block">
+            <div class="code-label">🇯🇵 日本 (printsmash)</div>
+            <div class="code-val">KKFX33QQ4L</div>
           </div>
         </div>
 
-        <button class="btn btn-secondary" style="margin-bottom: 12px;" onclick="promptUrls()">⚙️ 設定三國對應網址</button>
-        <button class="btn btn-secondary" id="t-qr-back" onclick="switchToMain()">返回製作頁面</button>
+        <button class="btn btn-secondary" id="t-code-back" onclick="switchToMain()">返回製作頁面</button>
       </div>
     </div>
 
   </div>
 
   <input type="file" id="fileInput" accept="image/*">
-  <input type="file" id="qrFileInputTW" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'TW')">
-  <input type="file" id="qrFileInputKR" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'KR')">
-  <input type="file" id="qrFileInputJP" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'JP')">
 
   <script>
     let currentTweetText = "";
@@ -523,11 +504,11 @@
         authorLabel: "製作者：",
         dlTitle: "🎉 拼貼已完成！",
         dlDesc: "請【長按下方圖片】選擇「儲存影像」存至手機相簿：",
-        btnNextQr: "查看獨家驚喜 QR Code 👉",
+        btnNextQr: "查看超商列印代碼 👉",
         btnBackEditor: "← 返回繼續編輯",
-        qrTitle: "🎁 獲得獨家驚喜 QR Code！",
-        qrDesc: "感謝參與 HAPPY MIN DAY 2026！<br>點擊 QR 圖檔可上傳圖片，或掃描獲得專屬內容：",
-        qrBack: "返回製作頁面"
+        codeTitle: "🖨️ 超商列印代碼",
+        codeDesc: "感謝參與 HAPPY MIN DAY 2026！<br>至各國超商列印機台輸入代碼即可列印：",
+        codeBack: "返回製作頁面"
       },
       ja: {
         captchaSub: "select all images with MIN's color",
@@ -539,11 +520,11 @@
         authorLabel: "Created by ",
         dlTitle: "🎉 コラージュが完成しました！",
         dlDesc: "【画像を長押し】して「写真に保存」を選択してください：",
-        btnNextQr: "サプライズ QR コードを見る 👉",
+        btnNextQr: "コンビニプリント番号を見る 👉",
         btnBackEditor: "← 編集に戻る",
-        qrTitle: "🎁 特別なサプライズ QR コード！",
-        qrDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
-        qrBack: "作成画面に戻る"
+        codeTitle: "🖨️ コンビニプリント番号",
+        codeDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>各国のコンビニ印刷機に番号を入力して印刷してください：",
+        codeBack: "作成画面に戻る"
       },
       ko: {
         captchaSub: "select all images with MIN's color",
@@ -555,11 +536,11 @@
         authorLabel: "제작자: ",
         dlTitle: "🎉 콜라주 완성!",
         dlDesc: "아래 이미지를 【길게 누른 후】 「사진에 저장」을 선택하세요:",
-        btnNextQr: "서프라이즈 QR 코드 확인하기 👉",
+        btnNextQr: "편의점 프린트 코드 확인하기 👉",
         btnBackEditor: "← 계속 편집하기",
-        qrTitle: "🎁 서프라이즈 QR 코드 획득!",
-        qrDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
-        qrBack: "만들기 페이지로 돌아가기"
+        codeTitle: "🖨️ 편의점 프린트 코드",
+        codeDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>각국 편의점 기기에 코드를 입력하여 출력하세요:",
+        codeBack: "만들기 페이지로 돌아가기"
       },
       en: {
         captchaSub: "select all images with MIN's color",
@@ -571,11 +552,11 @@
         authorLabel: "Created by ",
         dlTitle: "🎉 Collage Complete!",
         dlDesc: "【Long press the image below】 and select 'Save Image':",
-        btnNextQr: "Get Surprise QR Code 👉",
+        btnNextQr: "Get Printing Codes 👉",
         btnBackEditor: "← Back to Edit",
-        qrTitle: "🎁 Surprise QR Code Unlocked!",
-        qrDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Scan the QR Code below to check out special content:",
-        qrBack: "Back to Editor"
+        codeTitle: "🖨️ Convenience Store Print Codes",
+        codeDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Enter the codes at convenience store kiosks to print:",
+        codeBack: "Back to Editor"
       }
     };
 
@@ -601,9 +582,9 @@
       document.getElementById('t-btn-next-qr').innerText = data.btnNextQr;
       document.getElementById('t-btn-back-editor').innerText = data.btnBackEditor;
 
-      document.getElementById('t-qr-title').innerText = data.qrTitle;
-      document.getElementById('t-qr-desc').innerHTML = data.qrDesc;
-      document.getElementById('t-qr-back').innerText = data.qrBack;
+      document.getElementById('t-code-title').innerText = data.codeTitle;
+      document.getElementById('t-code-desc').innerHTML = data.codeDesc;
+      document.getElementById('t-code-back').innerText = data.codeBack;
     }
 
     setLanguage('zh');
@@ -611,7 +592,7 @@
     function hideAllViews() {
       document.getElementById('mainView').style.display = 'none';
       document.getElementById('downloadView').style.display = 'none';
-      document.getElementById('qrView').style.display = 'none';
+      document.getElementById('codeView').style.display = 'none';
     }
 
     function switchToMain() {
@@ -627,36 +608,10 @@
       window.scrollTo(0, 0);
     }
 
-    function switchToQrPage() {
+    function switchToCodePage() {
       hideAllViews();
-      document.getElementById('qrView').style.display = 'flex';
+      document.getElementById('codeView').style.display = 'flex';
       window.scrollTo(0, 0);
-    }
-
-    function triggerQrUpload(country) {
-      document.getElementById(`qrFileInput${country}`).click();
-    }
-
-    function loadQrImage(input, country) {
-      const file = input.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById(`qrImg${country}`).src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function promptUrls() {
-      const tw = prompt("請輸入台灣 QR Code 的網址：", document.getElementById('qrLinkTW').href);
-      if (tw) { document.getElementById('qrLinkTW').href = tw; document.getElementById('qrLinkTW').innerText = tw; }
-
-      const kr = prompt("請輸入韓國 QR Code 的網址：", document.getElementById('qrLinkKR').href);
-      if (kr) { document.getElementById('qrLinkKR').href = kr; document.getElementById('qrLinkKR').innerText = kr; }
-
-      const jp = prompt("請輸入日本 QR Code 的網址：", document.getElementById('qrLinkJP').href);
-      if (jp) { document.getElementById('qrLinkJP').href = jp; document.getElementById('qrLinkJP').innerText = jp; }
     }
 
     const fileInput = document.getElementById('fileInput');
@@ -936,7 +891,7 @@
         ctx.restore();
       }
 
-      // 中間格拍立得框繪製（自動依據原圖長寬比，防止被硬拉成 1:1 正方形）
+      // 中間格拍立得框繪製
       const centerIx = startX + 1 * (itemSize + gap);
       const centerIy = startY + 1 * (itemSize + gap);
 
@@ -946,14 +901,11 @@
         ctx.shadowBlur = 14;
         ctx.shadowOffsetY = 6;
         
-        // 自動依照拍立得圖檔的原圖長寬比計算 Canvas 上的寬高
         const naturalRatio = loadedOverlayImg.naturalWidth / loadedOverlayImg.naturalHeight;
         
-        // 對應 CSS 1.05 放大比例
         let frameW = itemSize * 1.05; 
         let frameH = frameW / naturalRatio;
 
-        // 計算中心對齊點，並對應 CSS translateY(-52%) 稍微上移效果
         const centerX = centerIx + itemSize / 2;
         const centerY = centerIy + itemSize / 2;
         const frameX = centerX - frameW / 2;
