@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta name="format-detection" content="telephone=no">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 禁止裝置自動將數字辨識為電話號碼與超連結 -->
+  <meta name="format-detection" content="telephone=no">
   <title>HAPPY MIN DAY 2026 - Photo Collage</title>
   <style>
     * {
@@ -379,9 +380,11 @@
     .code-val {
       font-size: 15px;
       font-weight: 800;
-      color: #F8B62D;
+      color: #F8B62D !important;
       font-family: monospace, monospace;
       letter-spacing: 0.5px;
+      text-decoration: none !important;
+      pointer-events: none;
     }
 
     #fileInput {
@@ -400,6 +403,7 @@
       <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
     </div>
 
+    <!-- 主製作頁面 -->
     <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
       <div class="card-container" id="collageCard">
         <div class="captcha-header">
@@ -440,9 +444,10 @@
         <button class="btn btn-share" id="shareXBtn">發送到 X</button>
       </div>
 
-      <div class="author-tag"><span id="t-author-label">製作者：</span>@isakaichigo</div>
+      <div class="author-tag"><span class="t-author-label">製作者：</span>@isakaichigo</div>
     </div>
 
+    <!-- 圖片下載完成頁面 -->
     <div id="downloadView" class="result-view">
       <div class="result-card">
         <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
@@ -453,8 +458,10 @@
         <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToCodePage()">查看超商列印代碼 👉</button>
         <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
       </div>
+      <div class="author-tag"><span class="t-author-label">製作者：</span>@isakaichigo</div>
     </div>
 
+    <!-- 超商列印代碼頁面 -->
     <div id="codeView" class="result-view">
       <div class="result-card">
         <div class="result-title" id="t-code-title">🖨️ 超商列印代碼</div>
@@ -481,6 +488,10 @@
         </div>
 
         <button class="btn btn-secondary" id="t-code-back" onclick="switchToMain()">返回製作頁面</button>
+      </div>
+      <div class="author-tag">
+        photo by @Char_HFU<br>
+        <span class="t-author-label">製作者：</span>@isakaichigo
       </div>
     </div>
 
@@ -576,7 +587,10 @@
 
       document.getElementById('downloadBtn').innerText = data.btnDownload;
       document.getElementById('shareXBtn').innerText = data.btnShareX;
-      document.getElementById('t-author-label').innerText = data.authorLabel;
+
+      document.querySelectorAll('.t-author-label').forEach(el => {
+        el.innerText = data.authorLabel;
+      });
 
       document.getElementById('t-dl-title').innerText = data.dlTitle;
       document.getElementById('t-dl-desc').innerText = data.dlDesc;
@@ -769,7 +783,7 @@
       }
     }
 
-    /* 安全的圖片載入函式 (含防卡死與跨域跨載機制) */
+    /* 安全的圖片載入函式 */
     function loadImage(src) {
       return new Promise((resolve) => {
         if (!src) return resolve(null);
