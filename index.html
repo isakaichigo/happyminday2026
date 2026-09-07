@@ -444,7 +444,7 @@
         <button class="btn btn-share" id="shareXBtn">發送到 X</button>
       </div>
 
-      <div class="author-tag"><span class="t-author-label">製作者：</span>@isakaichigo</div>
+      <div class="author-tag">project by @isakaichigo</div>
     </div>
 
     <!-- 圖片下載完成頁面 -->
@@ -458,7 +458,7 @@
         <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToCodePage()">查看超商列印代碼 👉</button>
         <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
       </div>
-      <div class="author-tag"><span class="t-author-label">製作者：</span>@isakaichigo</div>
+      <div class="author-tag">project by @isakaichigo</div>
     </div>
 
     <!-- 超商列印代碼頁面 -->
@@ -491,7 +491,7 @@
       </div>
       <div class="author-tag">
         photo by @Char_HFU<br>
-        <span class="t-author-label"> project by @isakaichigo </span>
+        project by @isakaichigo
       </div>
     </div>
 
@@ -513,7 +513,6 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "下載圖片",
         btnShareX: "發送到 X",
-        authorLabel: "製作者：",
         dlTitle: "🎉 拼貼已完成！",
         dlDesc: "請【長按下方圖片】選擇「儲存影像」存至手機相簿：",
         btnNextQr: "查看超商列印代碼 👉",
@@ -529,7 +528,6 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "画像を保存",
         btnShareX: "X に投稿",
-        authorLabel: "Created by ",
         dlTitle: "🎉 コラージュが完成しました！",
         dlDesc: "【画像を長押し】して「写真に保存」を選択してください：",
         btnNextQr: "コンビニプリント番号を見る 👉",
@@ -545,7 +543,6 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "이미지 다운로드",
         btnShareX: "X에 공유하기",
-        authorLabel: "제작자: ",
         dlTitle: "🎉 콜라주 완성!",
         dlDesc: "아래 이미지를 【길게 누른 후】 「사진에 저장」을 선택하세요:",
         btnNextQr: "편의점 프린트 코드 확인하기 👉",
@@ -561,7 +558,6 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "Download Image",
         btnShareX: "Share to X",
-        authorLabel: "Created by ",
         dlTitle: "🎉 Collage Complete!",
         dlDesc: "【Long press the image below】 and select 'Save Image':",
         btnNextQr: "Get Printing Codes 👉",
@@ -587,10 +583,6 @@
 
       document.getElementById('downloadBtn').innerText = data.btnDownload;
       document.getElementById('shareXBtn').innerText = data.btnShareX;
-
-      document.querySelectorAll('.t-author-label').forEach(el => {
-        el.innerText = data.authorLabel;
-      });
 
       document.getElementById('t-dl-title').innerText = data.dlTitle;
       document.getElementById('t-dl-desc').innerText = data.dlDesc;
