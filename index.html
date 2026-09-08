@@ -2,9 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- 禁止裝置自動將數字辨識為電話號碼與超連結 -->
-  <meta name="format-detection" content="telephone=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>HAPPY MIN DAY 2026 - Photo Collage</title>
   <style>
     * {
@@ -16,31 +14,38 @@
       -webkit-user-select: none;
     }
 
-    body {
+    /* 修復：鎖定全域寬度，禁止橫向溢出 */
+    html, body {
+      width: 100%;
+      max-width: 100vw;
+      min-height: 100vh;
+      overflow-x: hidden;
       background-color: #f5f5f7;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      padding: 20px;
+      padding: 16px 12px;
       color: #333;
     }
 
+    /* 修復：確保主容器在手機端完美置中且不溢出 */
     .view-container {
       width: 100%;
-      max-width: 480px;
+      max-width: 440px;
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
     }
 
-    /* 多語言切換按鈕 */
     .lang-switch {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-bottom: 16px;
       width: 100%;
       justify-content: center;
+      flex-wrap: wrap;
     }
 
     .lang-btn {
@@ -61,7 +66,6 @@
       border-color: #F8B62D;
     }
 
-    /* 主卡片容器 */
     .card-container {
       background-color: #ffffff;
       border-radius: 16px;
@@ -69,19 +73,19 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
       border: 2px solid #e0e0e0;
       width: 100%;
+      overflow: hidden; /* 防止內部圖層撐開邊界 */
     }
 
-    /* 頂部橘色區塊 */
     .captcha-header {
       background-color: #F8B62D;
       border-radius: 8px;
-      padding: 16px 20px;
+      padding: 14px 16px;
       color: #ffffff;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .captcha-sub {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       opacity: 0.9;
       margin-bottom: 4px;
@@ -89,19 +93,20 @@
     }
 
     .captcha-main {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 900;
       font-style: italic;
       letter-spacing: 0.5px;
     }
 
-    /* 九宮格容器 */
     .grid-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
       background-color: #ffffff;
       margin-bottom: 16px;
+      width: 100%;
+      position: relative;
     }
 
     .grid-item {
@@ -111,16 +116,16 @@
       justify-content: center;
       align-items: center;
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* 關鍵：防止圖片縮放拖曳時拉寬頁面 */
       cursor: pointer;
       transition: background-color 0.2s ease;
+      border-radius: 4px;
     }
 
     .grid-item:hover {
       background-color: #e8e8e8;
     }
 
-    /* 預設加號標誌（排除鎖定的中間格） */
     .grid-item:not(.locked-block)::before {
       content: '+';
       font-size: 36px;
@@ -138,7 +143,6 @@
       z-index: 2;
     }
 
-    /* 中間固定浮起格 */
     .grid-item.locked-block {
       overflow: visible !important;
       background-color: transparent;
@@ -146,7 +150,6 @@
       z-index: 3;
     }
 
-    /* 中間固定圖片 */
     .center-user-photo {
       position: absolute;
       top: 0;
@@ -155,11 +158,10 @@
       height: 100%;
       background-size: cover;
       background-position: center;
-      background-image: url('https://i.ibb.co/7Nxnc8mM/IMG-4362.jpg'); 
+      background-color: #fff3d6;
       z-index: 1;
     }
 
-    /* 上層蓋住的拍立得框 PNG */
     .polaroid-frame-overlay {
       position: absolute;
       top: 50%;
@@ -172,16 +174,22 @@
       filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
     }
 
-    /* 圖片包裹與拉桿 */
     .img-wrapper {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-size: cover;
-      background-position: center;
-      transform-origin: center center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .img-wrapper img {
+      position: absolute;
+      will-change: transform;
+      pointer-events: none;
     }
 
     .delete-btn {
@@ -230,7 +238,6 @@
       accent-color: #F8B62D;
     }
 
-    /* 底部社群列 */
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -240,13 +247,13 @@
 
     .footer-icons {
       display: flex;
-      gap: 14px;
+      gap: 12px;
       align-items: center;
     }
 
     .footer-icons svg {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       fill: none;
       stroke: #222;
       stroke-width: 2.2;
@@ -259,13 +266,12 @@
       color: #ffffff;
       font-weight: 900;
       font-style: italic;
-      font-size: 18px;
-      padding: 8px 24px;
+      font-size: 16px;
+      padding: 6px 20px;
       border-radius: 6px;
       letter-spacing: 0.5px;
     }
 
-    /* 操作按鈕區 */
     .action-buttons {
       display: flex;
       gap: 12px;
@@ -306,7 +312,6 @@
       text-align: center;
     }
 
-    /* 完成與列印碼頁面樣式 */
     .result-view {
       display: none;
       flex-direction: column;
@@ -342,6 +347,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
       margin-bottom: 20px;
+      display: block;
     }
 
     .btn-secondary {
@@ -350,44 +356,54 @@
       margin-top: 10px;
     }
 
-    /* 三國列印碼容器 */
-    .code-container-triple {
+    .qr-container-triple {
+      display: flex;
+      justify-content: space-around;
+      align-items: flex-start;
+      gap: 6px;
+      margin: 16px 0;
+      width: 100%;
+    }
+
+    .qr-block {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin: 16px 0;
-    }
-
-    .code-block {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
       background: #fafafa;
-      padding: 12px 16px;
-      border-radius: 10px;
+      padding: 8px 4px;
+      border-radius: 8px;
       border: 1px solid #eee;
+      min-width: 0;
     }
 
-    .code-label {
-      font-size: 14px;
+    .qr-country-label {
+      font-size: 12px;
       font-weight: 700;
       color: #333;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      margin-bottom: 6px;
     }
 
-    .code-val {
-      font-size: 15px;
-      font-weight: 800;
-      color: #F8B62D !important;
-      font-family: monospace, monospace;
-      letter-spacing: 0.5px;
-      text-decoration: none !important;
-      pointer-events: none;
+    .qr-img {
+      width: 100%;
+      max-width: 100px;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background: #fff;
+      cursor: pointer;
     }
 
-    #fileInput {
+    .qr-link {
+      margin-top: 6px;
+      font-size: 10px;
+      color: #F8B62D;
+      text-decoration: underline;
+      word-break: break-all;
+    }
+
+    #fileInput, .qr-file-input {
       display: none;
     }
   </style>
@@ -403,7 +419,6 @@
       <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
     </div>
 
-    <!-- 主製作頁面 -->
     <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
       <div class="card-container" id="collageCard">
         <div class="captcha-header">
@@ -419,576 +434,4 @@
           
           <div class="grid-item locked-block" id="centerGridItem">
             <div class="center-user-photo" id="centerFixedPhoto"></div>
-            <img src="https://i.ibb.co/pvq0cKS3/IMG-4351.jpg" crossorigin="anonymous" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
-          </div>
-          
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-          <div class="grid-item"></div>
-        </div>
-
-        <div class="card-footer">
-          <div class="footer-icons">
-            <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l8.72-8.72 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
-            <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-          </div>
-          <div class="done-btn">DONE</div>
-        </div>
-      </div>
-
-      <div class="action-buttons">
-        <button class="btn btn-download" id="downloadBtn">下載圖片</button>
-        <button class="btn btn-share" id="shareXBtn">發送到 X</button>
-      </div>
-
-      <div class="author-tag">project by @isakaichigo</div>
-    </div>
-
-    <!-- 圖片下載完成頁面 -->
-    <div id="downloadView" class="result-view">
-      <div class="result-card">
-        <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
-        <div class="result-desc" id="t-dl-desc">請【長按下方圖片】選擇「儲存影像」存至手機相簿：</div>
-        
-        <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
-
-        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToCodePage()">查看超商列印代碼 👉</button>
-        <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
-      </div>
-      <div class="author-tag">project by @isakaichigo</div>
-    </div>
-
-    <!-- 超商列印代碼頁面 -->
-    <div id="codeView" class="result-view">
-      <div class="result-card">
-        <div class="result-title" id="t-code-title">🖨️ 超商列印代碼</div>
-        <div class="result-desc" id="t-code-desc">感謝參與 HAPPY MIN DAY 2026！<br>至各國超商列印機台輸入代碼即可列印：</div>
-
-        <div class="code-container-triple">
-          <!-- 台灣 -->
-          <div class="code-block">
-            <div class="code-label">🇹🇼 台灣 (ibon)</div>
-            <div class="code-val">2494045387</div>
-          </div>
-
-          <!-- 韓國 -->
-          <div class="code-block">
-            <div class="code-label">🇰🇷 韓國 (printingbox)</div>
-            <div class="code-val">7563692</div>
-          </div>
-
-          <!-- 日本 -->
-          <div class="code-block">
-            <div class="code-label">🇯🇵 日本 (printsmash)</div>
-            <div class="code-val">KKFX33QQ4L</div>
-          </div>
-        </div>
-
-        <button class="btn btn-secondary" id="t-code-back" onclick="switchToMain()">返回製作頁面</button>
-      </div>
-      <div class="author-tag">
-        photo by @Char_HFU<br>
-        project by @isakaichigo
-      </div>
-    </div>
-
-  </div>
-
-  <input type="file" id="fileInput" accept="image/*">
-
-  <script>
-    let currentTweetText = "";
-    let currentHashtags = "";
-
-    const defaultHashtagList = "HiFiUnicorn,ホミン,허민,happyminday,HEOMIN,HAPPY_MINDAY_2026,みんなのビタミン";
-
-    const i18n = {
-      zh: {
-        captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "HAPPY MIN DAY 2026!",
-        defaultHashtags: defaultHashtagList,
-        btnDownload: "下載圖片",
-        btnShareX: "發送到 X",
-        dlTitle: "🎉 拼貼已完成！",
-        dlDesc: "請【長按下方圖片】選擇「儲存影像」存至手機相簿：",
-        btnNextQr: "查看超商列印代碼 👉",
-        btnBackEditor: "← 返回繼續編輯",
-        codeTitle: "🖨️ 超商列印代碼",
-        codeDesc: "感謝參與 HAPPY MIN DAY 2026！<br>至各國超商列印機台輸入代碼即可列印：",
-        codeBack: "返回製作頁面"
-      },
-      ja: {
-        captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "HAPPY MIN DAY 2026!",
-        defaultHashtags: defaultHashtagList,
-        btnDownload: "画像を保存",
-        btnShareX: "X に投稿",
-        dlTitle: "🎉 コラージュが完成しました！",
-        dlDesc: "【画像を長押し】して「写真に保存」を選択してください：",
-        btnNextQr: "コンビニプリント番号を見る 👉",
-        btnBackEditor: "← 編集に戻る",
-        codeTitle: "🖨️ コンビニプリント番号",
-        codeDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>各国のコンビニ印刷機に番号を入力して印刷してください：",
-        codeBack: "作成画面に戻る"
-      },
-      ko: {
-        captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "HAPPY MIN DAY 2026!",
-        defaultHashtags: defaultHashtagList,
-        btnDownload: "이미지 다운로드",
-        btnShareX: "X에 공유하기",
-        dlTitle: "🎉 콜라주 완성!",
-        dlDesc: "아래 이미지를 【길게 누른 후】 「사진에 저장」을 선택하세요:",
-        btnNextQr: "편의점 프린트 코드 확인하기 👉",
-        btnBackEditor: "← 계속 편집하기",
-        codeTitle: "🖨️ 편의점 프린트 코드",
-        codeDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>각국 편의점 기기에 코드를 입력하여 출력하세요:",
-        codeBack: "만들기 페이지로 돌아가기"
-      },
-      en: {
-        captchaSub: "select all images with MIN's color",
-        captchaMain: "HAPPY MIN DAY 2026",
-        defaultText: "HAPPY MIN DAY 2026!",
-        defaultHashtags: defaultHashtagList,
-        btnDownload: "Download Image",
-        btnShareX: "Share to X",
-        dlTitle: "🎉 Collage Complete!",
-        dlDesc: "【Long press the image below】 and select 'Save Image':",
-        btnNextQr: "Get Printing Codes 👉",
-        btnBackEditor: "← Back to Edit",
-        codeTitle: "🖨️ Convenience Store Print Codes",
-        codeDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Enter the codes at convenience store kiosks to print:",
-        codeBack: "Back to Editor"
-      }
-    };
-
-    function setLanguage(lang, event) {
-      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-      if (event && event.target) {
-        event.target.classList.add('active');
-      }
-
-      const data = i18n[lang];
-      document.getElementById('t-captcha-sub').innerText = data.captchaSub;
-      document.getElementById('t-captcha-main').innerText = data.captchaMain;
-      
-      currentTweetText = data.defaultText;
-      currentHashtags = data.defaultHashtags;
-
-      document.getElementById('downloadBtn').innerText = data.btnDownload;
-      document.getElementById('shareXBtn').innerText = data.btnShareX;
-
-      document.getElementById('t-dl-title').innerText = data.dlTitle;
-      document.getElementById('t-dl-desc').innerText = data.dlDesc;
-      document.getElementById('t-btn-next-qr').innerText = data.btnNextQr;
-      document.getElementById('t-btn-back-editor').innerText = data.btnBackEditor;
-
-      document.getElementById('t-code-title').innerText = data.codeTitle;
-      document.getElementById('t-code-desc').innerHTML = data.codeDesc;
-      document.getElementById('t-code-back').innerText = data.codeBack;
-    }
-
-    setLanguage('zh');
-
-    function hideAllViews() {
-      document.getElementById('mainView').style.display = 'none';
-      document.getElementById('downloadView').style.display = 'none';
-      document.getElementById('codeView').style.display = 'none';
-    }
-
-    function switchToMain() {
-      hideAllViews();
-      document.getElementById('mainView').style.display = 'flex';
-      window.scrollTo(0, 0);
-    }
-
-    function switchToDownload(imgBase64) {
-      hideAllViews();
-      document.getElementById('resultImage').src = imgBase64;
-      document.getElementById('downloadView').style.display = 'flex';
-      window.scrollTo(0, 0);
-    }
-
-    function switchToCodePage() {
-      hideAllViews();
-      document.getElementById('codeView').style.display = 'flex';
-      window.scrollTo(0, 0);
-    }
-
-    const fileInput = document.getElementById('fileInput');
-    const items = document.querySelectorAll('.grid-item:not(.locked-block)');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const shareXBtn = document.getElementById('shareXBtn');
-    let activeItem = null;
-
-    items.forEach(item => {
-      const delBtn = document.createElement('button');
-      delBtn.className = 'delete-btn';
-      delBtn.innerHTML = '✕';
-      item.appendChild(delBtn);
-
-      const zoomControl = document.createElement('div');
-      zoomControl.className = 'zoom-control';
-      zoomControl.innerHTML = `<input type="range" min="1" max="3" step="0.05" value="1">`;
-      item.appendChild(zoomControl);
-
-      const slider = zoomControl.querySelector('input');
-      item.state = { scale: 1, x: 0, y: 0 };
-
-      function updateTransform() {
-        const wrapper = item.querySelector('.img-wrapper');
-        if (wrapper) {
-          wrapper.style.transform = `translate(${item.state.x}px, ${item.state.y}px) scale(${item.state.scale})`;
-        }
-      }
-
-      slider.addEventListener('input', (e) => {
-        item.state.scale = parseFloat(e.target.value);
-        updateTransform();
-      });
-
-      delBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const wrapper = item.querySelector('.img-wrapper');
-        if (wrapper) wrapper.remove();
-        item.classList.remove('has-image', 'selected');
-        item.loadedImageObj = null;
-        item.state = { scale: 1, x: 0, y: 0 };
-        slider.value = 1;
-      });
-
-      item.addEventListener('click', (e) => {
-        if (e.target === delBtn || e.target === slider) return;
-        items.forEach(i => i.classList.remove('selected'));
-
-        if (!item.classList.contains('has-image')) {
-          activeItem = item;
-          fileInput.click();
-        } else {
-          item.classList.add('selected');
-        }
-      });
-
-      item.addEventListener('wheel', (e) => {
-        if (!item.classList.contains('has-image')) return;
-        e.preventDefault();
-        let delta = e.deltaY > 0 ? -0.1 : 0.1;
-        item.state.scale = Math.min(Math.max(1, item.state.scale + delta), 3);
-        slider.value = item.state.scale;
-        updateTransform();
-      }, { passive: false });
-
-      let isDragging = false;
-      let startX, startY;
-
-      function onStart(e) {
-        if (!item.classList.contains('has-image') || e.target === slider || e.target === delBtn) return;
-        isDragging = true;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        startX = clientX - item.state.x;
-        startY = clientY - item.state.y;
-      }
-
-      function onMove(e) {
-        if (!isDragging) return;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        item.state.x = clientX - startX;
-        item.state.y = clientY - startY;
-        updateTransform();
-      }
-
-      function onEnd() { isDragging = false; }
-
-      item.addEventListener('mousedown', onStart);
-      document.addEventListener('mousemove', onMove);
-      document.addEventListener('mouseup', onEnd);
-      item.addEventListener('touchstart', onStart, { passive: false });
-      document.addEventListener('touchmove', onMove, { passive: false });
-      document.addEventListener('touchend', onEnd);
-    });
-
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file && activeItem) {
-        const reader = new FileReader();
-        reader.onload = function(evt) {
-          const imgUrl = evt.target.result;
-          const img = new Image();
-          img.src = imgUrl;
-          img.onload = () => {
-            activeItem.loadedImageObj = img;
-          };
-
-          let wrapper = activeItem.querySelector('.img-wrapper');
-          if (!wrapper) {
-            wrapper = document.createElement('div');
-            wrapper.className = 'img-wrapper';
-            activeItem.appendChild(wrapper);
-          }
-          wrapper.style.backgroundImage = `url('${imgUrl}')`;
-          activeItem.classList.add('has-image', 'selected');
-          activeItem.state = { scale: 1, x: 0, y: 0 };
-          activeItem.querySelector('.zoom-control input').value = 1;
-          wrapper.style.transform = 'translate(0px, 0px) scale(1)';
-        };
-        reader.readAsDataURL(file);
-      }
-      fileInput.value = '';
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.grid-item')) {
-        items.forEach(i => i.classList.remove('selected'));
-      }
-    });
-
-    /* 圓角矩形繪製輔助函式 */
-    function drawRoundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y);
-      ctx.lineTo(x + width - radius, y);
-      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-      ctx.lineTo(x + width, y + height - radius);
-      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-      ctx.lineTo(x + radius, y + height);
-      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-      ctx.lineTo(x, y + radius);
-      ctx.quadraticCurveTo(x, y, x + radius, y);
-      ctx.closePath();
-
-      if (fillStyle) {
-        ctx.fillStyle = fillStyle;
-        ctx.fill();
-      }
-      if (strokeStyle) {
-        ctx.strokeStyle = strokeStyle;
-        ctx.lineWidth = strokeWidth || 1;
-        ctx.stroke();
-      }
-    }
-
-    /* 安全的圖片載入函式 */
-    function loadImage(src) {
-      return new Promise((resolve) => {
-        if (!src) return resolve(null);
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-
-        const timer = setTimeout(() => { resolve(null); }, 3000);
-
-        img.onload = () => {
-          clearTimeout(timer);
-          resolve(img);
-        };
-        img.onerror = () => {
-          clearTimeout(timer);
-          resolve(null);
-        };
-        img.src = src;
-      });
-    }
-
-    /* 全原生純 Canvas 渲染 */
-    async function generatePureCanvas() {
-      items.forEach(i => i.classList.remove('selected'));
-
-      const canvas = document.createElement('canvas');
-      canvas.width = 1344;
-      canvas.height = 1760;
-      const ctx = canvas.getContext('2d');
-
-      // 1. 卡片外框與背景
-      drawRoundRect(ctx, 24, 24, 1296, 1712, 32, '#FFFFFF', '#E0E0E0', 8);
-
-      // 2. 頂部橘色 Header 區塊
-      drawRoundRect(ctx, 72, 72, 1200, 260, 16, '#F8B62D');
-
-      // 3. Header 文字
-      ctx.textAlign = 'left';
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = '500 44px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.fillText(document.getElementById('t-captcha-sub').innerText, 120, 150);
-
-      ctx.font = 'italic 900 84px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.fillText(document.getElementById('t-captcha-main').innerText, 120, 250);
-
-      // 4. 九宮格相片區
-      const startX = 72;
-      const startY = 372;
-      const itemSize = 388;
-      const gap = 18;
-
-      const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
-
-      const overlayImgElement = document.getElementById('polaroidOverlayImg');
-      const centerPhotoEl = document.getElementById('centerFixedPhoto');
-      
-      let loadedOverlayImg = null;
-      let loadedCenterPhoto = null;
-
-      if (overlayImgElement && overlayImgElement.src) {
-        loadedOverlayImg = await loadImage(overlayImgElement.src);
-      }
-      
-      if (centerPhotoEl) {
-        const bgUrlMatch = window.getComputedStyle(centerPhotoEl).backgroundImage.match(/url\(['"]?(.*?)['"]?\)/);
-        if (bgUrlMatch && bgUrlMatch[1]) {
-          loadedCenterPhoto = await loadImage(bgUrlMatch[1]);
-        }
-      }
-
-      // 先劃分底層相片格
-      for (let index = 0; index < allGridElements.length; index++) {
-        const item = allGridElements[index];
-        const row = Math.floor(index / 3);
-        const col = index % 3;
-        const ix = startX + col * (itemSize + gap);
-        const iy = startY + row * (itemSize + gap);
-        const isCenterBlock = item.classList.contains('locked-block');
-
-        drawRoundRect(ctx, ix, iy, itemSize, itemSize, 0, isCenterBlock ? '#FFFFFF' : '#F2F2F2');
-
-        ctx.save();
-        ctx.beginPath();
-        ctx.rect(ix, iy, itemSize, itemSize);
-        ctx.clip();
-
-        if (isCenterBlock) {
-          if (loadedCenterPhoto) {
-            ctx.drawImage(loadedCenterPhoto, ix, iy, itemSize, itemSize);
-          }
-        } else if (item.loadedImageObj) {
-          const img = item.loadedImageObj;
-          const scale = item.state.scale || 1;
-          const offsetX = (item.state.x || 0) * (itemSize / 100);
-          const offsetY = (item.state.y || 0) * (itemSize / 100);
-
-          const imgRatio = img.width / img.height;
-          let drawW = itemSize;
-          let drawH = itemSize;
-          if (imgRatio > 1) {
-            drawW = itemSize * imgRatio;
-          } else {
-            drawH = itemSize / imgRatio;
-          }
-
-          const basePosX = ix + (itemSize - drawW) / 2;
-          const basePosY = iy + (itemSize - drawH) / 2;
-          const centerX = ix + itemSize / 2;
-          const centerY = iy + itemSize / 2;
-
-          ctx.translate(centerX + offsetX, centerY + offsetY);
-          ctx.scale(scale, scale);
-          ctx.drawImage(img, basePosX - centerX, basePosY - centerY, drawW, drawH);
-        } else {
-          ctx.fillStyle = '#BBBBBB';
-          ctx.font = '300 140px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText('+', ix + itemSize / 2, iy + itemSize / 2);
-        }
-        ctx.restore();
-      }
-
-      // 中間格拍立得框繪製
-      const centerIx = startX + 1 * (itemSize + gap);
-      const centerIy = startY + 1 * (itemSize + gap);
-
-      if (loadedOverlayImg) {
-        ctx.save();
-        ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
-        ctx.shadowBlur = 14;
-        ctx.shadowOffsetY = 6;
-        
-        const naturalRatio = loadedOverlayImg.naturalWidth / loadedOverlayImg.naturalHeight;
-        
-        let frameW = itemSize * 1.05; 
-        let frameH = frameW / naturalRatio;
-
-        const centerX = centerIx + itemSize / 2;
-        const centerY = centerIy + itemSize / 2;
-        const frameX = centerX - frameW / 2;
-        const frameY = centerY - (frameH * 0.52);
-
-        ctx.drawImage(loadedOverlayImg, frameX, frameY, frameW, frameH);
-        ctx.restore();
-      }
-
-      // 5. 底部圖示與按鈕區塊
-      const footerY = 1630;
-
-      function drawPath(pathStr, strokeColor, lineWidth = 8) {
-        const p = new Path2D(pathStr);
-        ctx.save();
-        ctx.strokeStyle = strokeColor;
-        ctx.lineWidth = lineWidth;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.stroke(p);
-        ctx.restore();
-      }
-
-      ctx.save(); ctx.translate(75, footerY - 30); ctx.scale(2.8, 2.8);
-      drawPath("M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z", "#222222", 2.2);
-      ctx.restore();
-
-      ctx.save(); ctx.translate(165, footerY - 30); ctx.scale(2.8, 2.8);
-      drawPath("M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z", "#222222", 2.2);
-      ctx.restore();
-
-      ctx.save(); ctx.translate(255, footerY - 30); ctx.scale(2.8, 2.8);
-      drawPath("M22 2L11 13M22 2l-7 20-4-9-9-4 22-9z", "#222222", 2.2);
-      ctx.restore();
-
-      ctx.save(); ctx.translate(345, footerY - 30); ctx.scale(2.8, 2.8);
-      drawPath("M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z", "#222222", 2.2);
-      ctx.restore();
-
-      drawRoundRect(ctx, 1020, footerY - 35, 250, 90, 16, '#F8B62D');
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'italic 900 48px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('DONE', 1145, footerY + 12);
-
-      return canvas.toDataURL('image/png');
-    }
-
-    downloadBtn.addEventListener('click', async () => {
-      try {
-        downloadBtn.innerText = "生成中...";
-        const imgBase64 = await generatePureCanvas();
-        switchToDownload(imgBase64);
-      } catch (e) {
-        console.error("生成圖片失敗", e);
-        alert("生成圖片失敗，請檢查網路或圖片資源！");
-      } finally {
-        const lang = document.querySelector('.lang-btn.active') ? document.querySelector('.lang-btn.active').getAttribute('onclick').match(/'(.*?)'/)[1] : 'zh';
-        downloadBtn.innerText = i18n[lang].btnDownload;
-      }
-    });
-
-    shareXBtn.addEventListener('click', async () => {
-      const tweetText = encodeURIComponent(currentTweetText);
-      const hashtags = encodeURIComponent(currentHashtags);
-      const xUrl = `https://x.com/intent/tweet?text=${tweetText}&hashtags=${hashtags}`;
-      window.open(xUrl, '_blank');
-
-      try {
-        const imgBase64 = await generatePureCanvas();
-        switchToDownload(imgBase64);
-      } catch (e) {
-        console.error("生成圖片失敗", e);
-      }
-    });
-  </script>
-</body>
-</html>
+            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='240' viewBox='0 0 200 240'><rect x='5' y='5' width='190' height='230' rx='8' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='3'/><rect x='18' y='18' width='164' height='164' fill='%23F8B62D' opacity='0.15'/><text x='100' y='212' font-family='sans-serif' font-weight='bold' font-size='16' fill='%23F8B62D' text-anchor='middle'>HAPPY MIN DA
