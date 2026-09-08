@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- 禁止裝置自動將數字辨識為電話號碼與超連結 -->
+  <meta name="format-detection" content="telephone=no">
   <title>HAPPY MIN DAY 2026 - Photo Collage</title>
   <style>
     * {
@@ -32,6 +34,7 @@
       align-items: center;
     }
 
+    /* 多語言切換按鈕 */
     .lang-switch {
       display: flex;
       gap: 8px;
@@ -58,6 +61,7 @@
       border-color: #F8B62D;
     }
 
+    /* 主卡片容器 */
     .card-container {
       background-color: #ffffff;
       border-radius: 16px;
@@ -67,6 +71,7 @@
       width: 100%;
     }
 
+    /* 頂部橘色區塊 */
     .captcha-header {
       background-color: #F8B62D;
       border-radius: 8px;
@@ -90,6 +95,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* 九宮格容器 */
     .grid-container {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -114,6 +120,7 @@
       background-color: #e8e8e8;
     }
 
+    /* 預設加號標誌（排除鎖定的中間格） */
     .grid-item:not(.locked-block)::before {
       content: '+';
       font-size: 36px;
@@ -131,6 +138,7 @@
       z-index: 2;
     }
 
+    /* 中間固定浮起格 */
     .grid-item.locked-block {
       overflow: visible !important;
       background-color: transparent;
@@ -138,6 +146,7 @@
       z-index: 3;
     }
 
+    /* 中間固定圖片 */
     .center-user-photo {
       position: absolute;
       top: 0;
@@ -146,10 +155,11 @@
       height: 100%;
       background-size: cover;
       background-position: center;
-      background-color: #fff3d6;
+      background-image: url('https://i.ibb.co/7Nxnc8mM/IMG-4362.jpg'); 
       z-index: 1;
     }
 
+    /* 上層蓋住的拍立得框 PNG */
     .polaroid-frame-overlay {
       position: absolute;
       top: 50%;
@@ -162,22 +172,16 @@
       filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.15));
     }
 
+    /* 圖片包裹與拉桿 */
     .img-wrapper {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .img-wrapper img {
-      position: absolute;
-      will-change: transform;
-      pointer-events: none;
+      background-size: cover;
+      background-position: center;
+      transform-origin: center center;
     }
 
     .delete-btn {
@@ -226,6 +230,7 @@
       accent-color: #F8B62D;
     }
 
+    /* 底部社群列 */
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -260,6 +265,7 @@
       letter-spacing: 0.5px;
     }
 
+    /* 操作按鈕區 */
     .action-buttons {
       display: flex;
       gap: 12px;
@@ -300,6 +306,7 @@
       text-align: center;
     }
 
+    /* 完成與列印碼頁面樣式 */
     .result-view {
       display: none;
       flex-direction: column;
@@ -343,52 +350,44 @@
       margin-top: 10px;
     }
 
-    .qr-container-triple {
+    /* 三國列印碼容器 */
+    .code-container-triple {
       display: flex;
-      justify-content: space-around;
-      align-items: flex-start;
-      gap: 8px;
+      flex-direction: column;
+      gap: 12px;
       margin: 16px 0;
     }
 
-    .qr-block {
-      flex: 1;
+    .code-block {
       display: flex;
-      flex-direction: column;
+      justify-content: space-between;
       align-items: center;
       background: #fafafa;
-      padding: 8px;
-      border-radius: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
       border: 1px solid #eee;
     }
 
-    .qr-country-label {
-      font-size: 13px;
+    .code-label {
+      font-size: 14px;
       font-weight: 700;
       color: #333;
-      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .qr-img {
-      width: 100%;
-      max-width: 110px;
-      aspect-ratio: 1 / 1;
-      object-fit: contain;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #fff;
-      cursor: pointer;
+    .code-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: #F8B62D !important;
+      font-family: monospace, monospace;
+      letter-spacing: 0.5px;
+      text-decoration: none !important;
+      pointer-events: none;
     }
 
-    .qr-link {
-      margin-top: 6px;
-      font-size: 11px;
-      color: #F8B62D;
-      text-decoration: underline;
-      word-break: break-all;
-    }
-
-    #fileInput, .qr-file-input {
+    #fileInput {
       display: none;
     }
   </style>
@@ -404,6 +403,7 @@
       <button class="lang-btn" onclick="setLanguage('en', event)">English</button>
     </div>
 
+    <!-- 主製作頁面 -->
     <div id="mainView" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
       <div class="card-container" id="collageCard">
         <div class="captcha-header">
@@ -419,8 +419,7 @@
           
           <div class="grid-item locked-block" id="centerGridItem">
             <div class="center-user-photo" id="centerFixedPhoto"></div>
-            <!-- 使用 100% 安全的內建向量 Polaroid 相框 Base64，絕無 Cross-Origin 封鎖問題 -->
-            <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='240' viewBox='0 0 200 240'><rect x='5' y='5' width='190' height='230' rx='8' fill='%23ffffff' stroke='%23e0e0e0' stroke-width='3'/><rect x='18' y='18' width='164' height='164' fill='%23F8B62D' opacity='0.15'/><text x='100' y='212' font-family='sans-serif' font-weight='bold' font-size='16' fill='%23F8B62D' text-anchor='middle'>HAPPY MIN DAY</text></svg>" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
+            <img src="https://i.ibb.co/pvq0cKS3/IMG-4351.jpg" crossorigin="anonymous" alt="Polaroid Frame" class="polaroid-frame-overlay" id="polaroidOverlayImg">
           </div>
           
           <div class="grid-item"></div>
@@ -445,9 +444,10 @@
         <button class="btn btn-share" id="shareXBtn">發送到 X</button>
       </div>
 
-      <div class="author-tag"><span id="t-author-label">製作者：</span>@isakaichigo</div>
+      <div class="author-tag">project by @isakaichigo</div>
     </div>
 
+    <!-- 圖片下載完成頁面 -->
     <div id="downloadView" class="result-view">
       <div class="result-card">
         <div class="result-title" id="t-dl-title">🎉 拼貼已完成！</div>
@@ -455,47 +455,49 @@
         
         <img id="resultImage" class="result-img-preview" src="" alt="生成的拼貼圖">
 
-        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToQrPage()">查看獨家驚喜 QR Code 👉</button>
+        <button class="btn btn-download" id="t-btn-next-qr" onclick="switchToCodePage()">查看超商列印代碼 👉</button>
         <button class="btn btn-secondary" id="t-btn-back-editor" onclick="switchToMain()">← 返回繼續編輯</button>
       </div>
+      <div class="author-tag">project by @isakaichigo</div>
     </div>
 
-    <div id="qrView" class="result-view">
+    <!-- 超商列印代碼頁面 -->
+    <div id="codeView" class="result-view">
       <div class="result-card">
-        <div class="result-title" id="t-qr-title">🎁 獲得獨家驚喜 QR Code！</div>
-        <div class="result-desc" id="t-qr-desc">感謝參與 HAPPY MIN DAY 2026！<br>掃描下方 QR Code 或點擊連結獲取專屬內容：</div>
+        <div class="result-title" id="t-code-title">🖨️ 超商列印代碼</div>
+        <div class="result-desc" id="t-code-desc">感謝參與 HAPPY MIN DAY 2026！<br>至各國超商列印機台輸入代碼即可列印：</div>
 
-        <div class="qr-container-triple">
-          <div class="qr-block">
-            <div class="qr-country-label">🇹🇼 台灣</div>
-            <img id="qrImgTW" class="qr-img" src="https://via.placeholder.com/150?text=Upload+TW" alt="台灣 QR Code" onclick="triggerQrUpload('TW')">
-            <a id="qrLinkTW" class="qr-link" href="#" target="_blank">點此開啟連結</a>
+        <div class="code-container-triple">
+          <!-- 台灣 -->
+          <div class="code-block">
+            <div class="code-label">🇹🇼 台灣 (ibon)</div>
+            <div class="code-val">2494045387</div>
           </div>
 
-          <div class="qr-block">
-            <div class="qr-country-label">🇰🇷 韓國</div>
-            <img id="qrImgKR" class="qr-img" src="https://via.placeholder.com/150?text=Upload+KR" alt="韓國 QR Code" onclick="triggerQrUpload('KR')">
-            <a id="qrLinkKR" class="qr-link" href="#" target="_blank">點此開啟連結</a>
+          <!-- 韓國 -->
+          <div class="code-block">
+            <div class="code-label">🇰🇷 韓國 (printingbox)</div>
+            <div class="code-val">7563692</div>
           </div>
 
-          <div class="qr-block">
-            <div class="qr-country-label">🇯🇵 日本</div>
-            <img id="qrImgJP" class="qr-img" src="https://via.placeholder.com/150?text=Upload+JP" alt="日本 QR Code" onclick="triggerQrUpload('JP')">
-            <a id="qrLinkJP" class="qr-link" href="#" target="_blank">點此開啟連結</a>
+          <!-- 日本 -->
+          <div class="code-block">
+            <div class="code-label">🇯🇵 日本 (printsmash)</div>
+            <div class="code-val">KKFX33QQ4L</div>
           </div>
         </div>
 
-        <button class="btn btn-secondary" style="margin-bottom: 12px;" onclick="promptUrls()">⚙️ 設定三國對應網址</button>
-        <button class="btn btn-secondary" id="t-qr-back" onclick="switchToMain()">返回製作頁面</button>
+        <button class="btn btn-secondary" id="t-code-back" onclick="switchToMain()">返回製作頁面</button>
+      </div>
+      <div class="author-tag">
+        photo by @Char_HFU<br>
+        project by @isakaichigo
       </div>
     </div>
 
   </div>
 
   <input type="file" id="fileInput" accept="image/*">
-  <input type="file" id="qrFileInputTW" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'TW')">
-  <input type="file" id="qrFileInputKR" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'KR')">
-  <input type="file" id="qrFileInputJP" class="qr-file-input" accept="image/*" onchange="loadQrImage(this, 'JP')">
 
   <script>
     let currentTweetText = "";
@@ -511,14 +513,13 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "下載圖片",
         btnShareX: "發送到 X",
-        authorLabel: "製作者：",
         dlTitle: "🎉 拼貼已完成！",
         dlDesc: "請【長按下方圖片】選擇「儲存影像」存至手機相簿：",
-        btnNextQr: "查看獨家驚喜 QR Code 👉",
+        btnNextQr: "查看超商列印代碼 👉",
         btnBackEditor: "← 返回繼續編輯",
-        qrTitle: "🎁 獲得獨家驚喜 QR Code！",
-        qrDesc: "感謝參與 HAPPY MIN DAY 2026！<br>點擊 QR 圖檔可上傳圖片，或掃描獲得專屬內容：",
-        qrBack: "返回製作頁面"
+        codeTitle: "🖨️ 超商列印代碼",
+        codeDesc: "感謝參與 HAPPY MIN DAY 2026！<br>至各國超商列印機台輸入代碼即可列印：",
+        codeBack: "返回製作頁面"
       },
       ja: {
         captchaSub: "select all images with MIN's color",
@@ -527,14 +528,13 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "画像を保存",
         btnShareX: "X に投稿",
-        authorLabel: "Created by ",
         dlTitle: "🎉 コラージュが完成しました！",
         dlDesc: "【画像を長押し】して「写真に保存」を選択してください：",
-        btnNextQr: "サプライズ QR コードを見る 👉",
+        btnNextQr: "コンビニプリント番号を見る 👉",
         btnBackEditor: "← 編集に戻る",
-        qrTitle: "🎁 特別なサプライズ QR コード！",
-        qrDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>以下の QR コードをスキャンして限定コンテンツをチェック：",
-        qrBack: "作成画面に戻る"
+        codeTitle: "🖨️ コンビニプリント番号",
+        codeDesc: "HAPPY MIN DAY 2026 にご参加いただきありがとうございます！<br>各国のコンビニ印刷機に番号を入力して印刷してください：",
+        codeBack: "作成画面に戻る"
       },
       ko: {
         captchaSub: "select all images with MIN's color",
@@ -543,14 +543,13 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "이미지 다운로드",
         btnShareX: "X에 공유하기",
-        authorLabel: "제작자: ",
         dlTitle: "🎉 콜라주 완성!",
         dlDesc: "아래 이미지를 【길게 누른 후】 「사진에 저장」을 선택하세요:",
-        btnNextQr: "서프라이즈 QR 코드 확인하기 👉",
+        btnNextQr: "편의점 프린트 코드 확인하기 👉",
         btnBackEditor: "← 계속 편집하기",
-        qrTitle: "🎁 서프라이즈 QR 코드 획득!",
-        qrDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>아래 QR 코드를 스캔하여 특별한 선물을 확인하세요:",
-        qrBack: "만들기 페이지로 돌아가기"
+        codeTitle: "🖨️ 편의점 프린트 코드",
+        codeDesc: "HAPPY MIN DAY 2026에 참여해주셔서 감사합니다!<br>각국 편의점 기기에 코드를 입력하여 출력하세요:",
+        codeBack: "만들기 페이지로 돌아가기"
       },
       en: {
         captchaSub: "select all images with MIN's color",
@@ -559,14 +558,13 @@
         defaultHashtags: defaultHashtagList,
         btnDownload: "Download Image",
         btnShareX: "Share to X",
-        authorLabel: "Created by ",
         dlTitle: "🎉 Collage Complete!",
         dlDesc: "【Long press the image below】 and select 'Save Image':",
-        btnNextQr: "Get Surprise QR Code 👉",
+        btnNextQr: "Get Printing Codes 👉",
         btnBackEditor: "← Back to Edit",
-        qrTitle: "🎁 Surprise QR Code Unlocked!",
-        qrDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Scan the QR Code below to check out special content:",
-        qrBack: "Back to Editor"
+        codeTitle: "🖨️ Convenience Store Print Codes",
+        codeDesc: "Thank you for joining HAPPY MIN DAY 2026!<br>Enter the codes at convenience store kiosks to print:",
+        codeBack: "Back to Editor"
       }
     };
 
@@ -585,16 +583,15 @@
 
       document.getElementById('downloadBtn').innerText = data.btnDownload;
       document.getElementById('shareXBtn').innerText = data.btnShareX;
-      document.getElementById('t-author-label').innerText = data.authorLabel;
 
       document.getElementById('t-dl-title').innerText = data.dlTitle;
       document.getElementById('t-dl-desc').innerText = data.dlDesc;
       document.getElementById('t-btn-next-qr').innerText = data.btnNextQr;
       document.getElementById('t-btn-back-editor').innerText = data.btnBackEditor;
 
-      document.getElementById('t-qr-title').innerText = data.qrTitle;
-      document.getElementById('t-qr-desc').innerHTML = data.qrDesc;
-      document.getElementById('t-qr-back').innerText = data.qrBack;
+      document.getElementById('t-code-title').innerText = data.codeTitle;
+      document.getElementById('t-code-desc').innerHTML = data.codeDesc;
+      document.getElementById('t-code-back').innerText = data.codeBack;
     }
 
     setLanguage('zh');
@@ -602,7 +599,7 @@
     function hideAllViews() {
       document.getElementById('mainView').style.display = 'none';
       document.getElementById('downloadView').style.display = 'none';
-      document.getElementById('qrView').style.display = 'none';
+      document.getElementById('codeView').style.display = 'none';
     }
 
     function switchToMain() {
@@ -618,36 +615,10 @@
       window.scrollTo(0, 0);
     }
 
-    function switchToQrPage() {
+    function switchToCodePage() {
       hideAllViews();
-      document.getElementById('qrView').style.display = 'flex';
+      document.getElementById('codeView').style.display = 'flex';
       window.scrollTo(0, 0);
-    }
-
-    function triggerQrUpload(country) {
-      document.getElementById(`qrFileInput${country}`).click();
-    }
-
-    function loadQrImage(input, country) {
-      const file = input.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          document.getElementById(`qrImg${country}`).src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-
-    function promptUrls() {
-      const tw = prompt("請輸入台灣 QR Code 的網址：", document.getElementById('qrLinkTW').href);
-      if (tw) { document.getElementById('qrLinkTW').href = tw; document.getElementById('qrLinkTW').innerText = tw; }
-
-      const kr = prompt("請輸入韓國 QR Code 的網址：", document.getElementById('qrLinkKR').href);
-      if (kr) { document.getElementById('qrLinkKR').href = kr; document.getElementById('qrLinkKR').innerText = kr; }
-
-      const jp = prompt("請輸入日本 QR Code 的網址：", document.getElementById('qrLinkJP').href);
-      if (jp) { document.getElementById('qrLinkJP').href = jp; document.getElementById('qrLinkJP').innerText = jp; }
     }
 
     const fileInput = document.getElementById('fileInput');
@@ -670,39 +641,16 @@
       const slider = zoomControl.querySelector('input');
       item.state = { scale: 1, x: 0, y: 0 };
 
-      // 防露白邊極限限制
-      function clampTransform() {
-        const img = item.querySelector('.img-wrapper img');
-        if (!img) return;
-
-        const boxSize = item.clientWidth;
-        const scale = item.state.scale;
-
-        const imgRatio = img.naturalWidth / img.naturalHeight;
-        let baseW = boxSize;
-        let baseH = boxSize;
-
-        if (imgRatio > 1) {
-          baseW = boxSize * imgRatio;
-        } else {
-          baseH = boxSize / imgRatio;
+      function updateTransform() {
+        const wrapper = item.querySelector('.img-wrapper');
+        if (wrapper) {
+          wrapper.style.transform = `translate(${item.state.x}px, ${item.state.y}px) scale(${item.state.scale})`;
         }
-
-        const scaledW = baseW * scale;
-        const scaledH = baseH * scale;
-
-        const maxOffsetX = (scaledW - boxSize) / 2;
-        const maxOffsetY = (scaledH - boxSize) / 2;
-
-        item.state.x = Math.max(-maxOffsetX, Math.min(maxOffsetX, item.state.x));
-        item.state.y = Math.max(-maxOffsetY, Math.min(maxOffsetY, item.state.y));
-
-        img.style.transform = `translate(${item.state.x}px, ${item.state.y}px) scale(${scale})`;
       }
 
       slider.addEventListener('input', (e) => {
         item.state.scale = parseFloat(e.target.value);
-        clampTransform();
+        updateTransform();
       });
 
       delBtn.addEventListener('click', (e) => {
@@ -710,7 +658,7 @@
         const wrapper = item.querySelector('.img-wrapper');
         if (wrapper) wrapper.remove();
         item.classList.remove('has-image', 'selected');
-        item.loadedImgElement = null;
+        item.loadedImageObj = null;
         item.state = { scale: 1, x: 0, y: 0 };
         slider.value = 1;
       });
@@ -733,7 +681,7 @@
         let delta = e.deltaY > 0 ? -0.1 : 0.1;
         item.state.scale = Math.min(Math.max(1, item.state.scale + delta), 3);
         slider.value = item.state.scale;
-        clampTransform();
+        updateTransform();
       }, { passive: false });
 
       let isDragging = false;
@@ -754,7 +702,7 @@
         const clientY = e.touches ? e.touches[0].clientY : e.clientY;
         item.state.x = clientX - startX;
         item.state.y = clientY - startY;
-        clampTransform();
+        updateTransform();
       }
 
       function onEnd() { isDragging = false; }
@@ -765,8 +713,6 @@
       item.addEventListener('touchstart', onStart, { passive: false });
       document.addEventListener('touchmove', onMove, { passive: false });
       document.addEventListener('touchend', onEnd);
-
-      item.clampTransform = clampTransform;
     });
 
     fileInput.addEventListener('change', (e) => {
@@ -775,36 +721,23 @@
         const reader = new FileReader();
         reader.onload = function(evt) {
           const imgUrl = evt.target.result;
-          
+          const img = new Image();
+          img.src = imgUrl;
+          img.onload = () => {
+            activeItem.loadedImageObj = img;
+          };
+
           let wrapper = activeItem.querySelector('.img-wrapper');
           if (!wrapper) {
             wrapper = document.createElement('div');
             wrapper.className = 'img-wrapper';
             activeItem.appendChild(wrapper);
           }
-
-          const img = new Image();
-          img.src = imgUrl;
-          img.onload = () => {
-            activeItem.loadedImgElement = img;
-
-            const imgRatio = img.naturalWidth / img.naturalHeight;
-            if (imgRatio > 1) {
-              img.style.height = '100%';
-              img.style.width = 'auto';
-            } else {
-              img.style.width = '100%';
-              img.style.height = 'auto';
-            }
-
-            activeItem.classList.add('has-image', 'selected');
-            activeItem.state = { scale: 1, x: 0, y: 0 };
-            activeItem.querySelector('.zoom-control input').value = 1;
-            activeItem.clampTransform();
-          };
-
-          wrapper.innerHTML = '';
-          wrapper.appendChild(img);
+          wrapper.style.backgroundImage = `url('${imgUrl}')`;
+          activeItem.classList.add('has-image', 'selected');
+          activeItem.state = { scale: 1, x: 0, y: 0 };
+          activeItem.querySelector('.zoom-control input').value = 1;
+          wrapper.style.transform = 'translate(0px, 0px) scale(1)';
         };
         reader.readAsDataURL(file);
       }
@@ -817,6 +750,7 @@
       }
     });
 
+    /* 圓角矩形繪製輔助函式 */
     function drawRoundRect(ctx, x, y, width, height, radius, fillStyle, strokeStyle, strokeWidth) {
       ctx.beginPath();
       ctx.moveTo(x + radius, y);
@@ -841,8 +775,29 @@
       }
     }
 
-    /* 純同步 Canvas 渲染引擎，不請求外部網絡，0毫秒完成 */
-    function generatePureCanvas() {
+    /* 安全的圖片載入函式 */
+    function loadImage(src) {
+      return new Promise((resolve) => {
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+
+        const timer = setTimeout(() => { resolve(null); }, 3000);
+
+        img.onload = () => {
+          clearTimeout(timer);
+          resolve(img);
+        };
+        img.onerror = () => {
+          clearTimeout(timer);
+          resolve(null);
+        };
+        img.src = src;
+      });
+    }
+
+    /* 全原生純 Canvas 渲染 */
+    async function generatePureCanvas() {
       items.forEach(i => i.classList.remove('selected'));
 
       const canvas = document.createElement('canvas');
@@ -850,13 +805,13 @@
       canvas.height = 1760;
       const ctx = canvas.getContext('2d');
 
-      // 1. 白色底卡
+      // 1. 卡片外框與背景
       drawRoundRect(ctx, 24, 24, 1296, 1712, 32, '#FFFFFF', '#E0E0E0', 8);
 
-      // 2. 頂部黃色標題區域
+      // 2. 頂部橘色 Header 區塊
       drawRoundRect(ctx, 72, 72, 1200, 260, 16, '#F8B62D');
 
-      // 3. 標題文字
+      // 3. Header 文字
       ctx.textAlign = 'left';
       ctx.fillStyle = '#FFFFFF';
       ctx.font = '500 44px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -865,7 +820,7 @@
       ctx.font = 'italic 900 84px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.fillText(document.getElementById('t-captcha-main').innerText, 120, 250);
 
-      // 4. 九宮格繪製
+      // 4. 九宮格相片區
       const startX = 72;
       const startY = 372;
       const itemSize = 388;
@@ -873,6 +828,24 @@
 
       const allGridElements = Array.from(document.querySelectorAll('.grid-item'));
 
+      const overlayImgElement = document.getElementById('polaroidOverlayImg');
+      const centerPhotoEl = document.getElementById('centerFixedPhoto');
+      
+      let loadedOverlayImg = null;
+      let loadedCenterPhoto = null;
+
+      if (overlayImgElement && overlayImgElement.src) {
+        loadedOverlayImg = await loadImage(overlayImgElement.src);
+      }
+      
+      if (centerPhotoEl) {
+        const bgUrlMatch = window.getComputedStyle(centerPhotoEl).backgroundImage.match(/url\(['"]?(.*?)['"]?\)/);
+        if (bgUrlMatch && bgUrlMatch[1]) {
+          loadedCenterPhoto = await loadImage(bgUrlMatch[1]);
+        }
+      }
+
+      // 先劃分底層相片格
       for (let index = 0; index < allGridElements.length; index++) {
         const item = allGridElements[index];
         const row = Math.floor(index / 3);
@@ -889,17 +862,16 @@
         ctx.clip();
 
         if (isCenterBlock) {
-          ctx.fillStyle = '#FFF3D6';
-          ctx.fillRect(ix, iy, itemSize, itemSize);
-        } else if (item.loadedImgElement) {
-          const img = item.loadedImgElement;
+          if (loadedCenterPhoto) {
+            ctx.drawImage(loadedCenterPhoto, ix, iy, itemSize, itemSize);
+          }
+        } else if (item.loadedImageObj) {
+          const img = item.loadedImageObj;
           const scale = item.state.scale || 1;
+          const offsetX = (item.state.x || 0) * (itemSize / 100);
+          const offsetY = (item.state.y || 0) * (itemSize / 100);
 
-          const scaleRatio = itemSize / item.clientWidth;
-          const offsetX = (item.state.x || 0) * scaleRatio;
-          const offsetY = (item.state.y || 0) * scaleRatio;
-
-          const imgRatio = img.naturalWidth / img.naturalHeight;
+          const imgRatio = img.width / img.height;
           let drawW = itemSize;
           let drawH = itemSize;
           if (imgRatio > 1) {
@@ -924,37 +896,33 @@
           ctx.fillText('+', ix + itemSize / 2, iy + itemSize / 2);
         }
         ctx.restore();
-
-        // 繪製中間精美 Polaroid 相框
-        if (isCenterBlock) {
-          ctx.save();
-          ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
-          ctx.shadowBlur = 14;
-          ctx.shadowOffsetY = 6;
-          
-          const frameW = itemSize * 1.04;
-          const frameH = itemSize * 1.04;
-          const frameX = ix - (frameW - itemSize) / 2;
-          const frameY = iy - (frameH - itemSize) / 2 - 20;
-
-          // 使用原生 Canvas 畫出質感拍立得框
-          drawRoundRect(ctx, frameX, frameY, frameW, frameH, 16, '#FFFFFF', '#E8E8E8', 2);
-          drawRoundRect(ctx, frameX + 20, frameY + 20, frameW - 40, frameH - 90, 8, '#F8B62D');
-
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = 'bold 32px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('MIN', frameX + frameW / 2, frameY + frameH / 2 - 20);
-
-          ctx.fillStyle = '#F8B62D';
-          ctx.font = 'italic bold 28px sans-serif';
-          ctx.fillText('HAPPY MIN DAY', frameX + frameW / 2, frameY + frameH - 25);
-
-          ctx.restore();
-        }
       }
 
-      // 5. 底部圖標與 DONE
+      // 中間格拍立得框繪製
+      const centerIx = startX + 1 * (itemSize + gap);
+      const centerIy = startY + 1 * (itemSize + gap);
+
+      if (loadedOverlayImg) {
+        ctx.save();
+        ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+        ctx.shadowBlur = 14;
+        ctx.shadowOffsetY = 6;
+        
+        const naturalRatio = loadedOverlayImg.naturalWidth / loadedOverlayImg.naturalHeight;
+        
+        let frameW = itemSize * 1.05; 
+        let frameH = frameW / naturalRatio;
+
+        const centerX = centerIx + itemSize / 2;
+        const centerY = centerIy + itemSize / 2;
+        const frameX = centerX - frameW / 2;
+        const frameY = centerY - (frameH * 0.52);
+
+        ctx.drawImage(loadedOverlayImg, frameX, frameY, frameW, frameH);
+        ctx.restore();
+      }
+
+      // 5. 底部圖示與按鈕區塊
       const footerY = 1630;
 
       function drawPath(pathStr, strokeColor, lineWidth = 8) {
@@ -994,22 +962,32 @@
       return canvas.toDataURL('image/png');
     }
 
-    downloadBtn.addEventListener('click', () => {
-      const imgBase64 = generatePureCanvas();
-      switchToDownload(imgBase64);
+    downloadBtn.addEventListener('click', async () => {
+      try {
+        downloadBtn.innerText = "生成中...";
+        const imgBase64 = await generatePureCanvas();
+        switchToDownload(imgBase64);
+      } catch (e) {
+        console.error("生成圖片失敗", e);
+        alert("生成圖片失敗，請檢查網路或圖片資源！");
+      } finally {
+        const lang = document.querySelector('.lang-btn.active') ? document.querySelector('.lang-btn.active').getAttribute('onclick').match(/'(.*?)'/)[1] : 'zh';
+        downloadBtn.innerText = i18n[lang].btnDownload;
+      }
     });
 
-    shareXBtn.addEventListener('click', () => {
-      const imgBase64 = generatePureCanvas();
-
-      // 1. 跳轉 X
+    shareXBtn.addEventListener('click', async () => {
       const tweetText = encodeURIComponent(currentTweetText);
       const hashtags = encodeURIComponent(currentHashtags);
       const xUrl = `https://x.com/intent/tweet?text=${tweetText}&hashtags=${hashtags}`;
       window.open(xUrl, '_blank');
 
-      // 2. 切換至圖片下載頁面
-      switchToDownload(imgBase64);
+      try {
+        const imgBase64 = await generatePureCanvas();
+        switchToDownload(imgBase64);
+      } catch (e) {
+        console.error("生成圖片失敗", e);
+      }
     });
   </script>
 </body>
